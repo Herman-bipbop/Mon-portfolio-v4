@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Herman Kouogang — Actualites cybersecurite, reseaux, data et IA">
+    <title>Actualites — Herman Kouogang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <script>(function(){var t=localStorage.getItem('hk-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+
+    <div id="loader" class="loader">
+        <div class="loader-inner">
+            <div class="loader-logo">HK</div>
+            <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+            <div class="loader-label">Chargement...</div>
+        </div>
+    </div>
+
+    <nav id="nav">
+        <div class="nav-inner">
+            <a href="../index.html" class="nav-brand">Herman_K<span class="blink">_</span></a>
+            <div class="nav-links" id="navLinks">
+                <a href="../index.html">Accueil</a>
+                <a href="about.html">A propos</a>
+                <a href="projects.html">Projets</a>
+                <a href="skills.html">Competences</a>
+                <a href="journey.html">Parcours</a>
+                <a href="news.html" class="active">Actualites</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Mode sombre">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </button>
+            <button class="burger" id="burger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <div class="container">
+            <span class="page-hero-tag">Veille technologique</span>
+            <h1 class="page-hero-title">Actualites</h1>
+            <p class="page-hero-sub">Cybersecurite, reseaux, data et innovations numeriques — les dernieres informations du secteur.</p>
+        </div>
+    </section>
+
+    <section class="news-section">
+        <div class="container">
+
+            <div class="news-toolbar" id="newsToolbar">
+                <!-- Boutons filtres injectes par news.js -->
+                <div class="news-search-wrap">
+                    <i class="fas fa-search news-search-icon"></i>
+                    <input type="text" class="news-search" id="newsSearch"
+                           placeholder="Rechercher un article..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="news-grid" id="newsGrid">
+                <div class="skeleton-card">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line w-30"></div>
+                        <div class="skeleton-line w-100"></div>
+                        <div class="skeleton-line w-80"></div>
+                        <div class="skeleton-line w-60"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line w-30"></div>
+                        <div class="skeleton-line w-80"></div>
+                        <div class="skeleton-line w-100"></div>
+                        <div class="skeleton-line w-60"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line w-30"></div>
+                        <div class="skeleton-line w-100"></div>
+                        <div class="skeleton-line w-60"></div>
+                        <div class="skeleton-line w-80"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-load-more" id="loadMoreWrap" style="display:none;">
+                <button class="btn btn-outline" id="loadMoreBtn">
+                    <i class="fas fa-arrow-down"></i>&nbsp; Charger plus d'articles
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-inner container">
+            <div class="footer-brand">Herman Kouogang — 2025</div>
+            <div class="footer-socials">
+                <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/herman-kouogang-kouam/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/kasho.llds" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/loader.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/animations.js"></script>
+    <script src="../js/news.js"></script>
+
+</body>
+</html>

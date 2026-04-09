@@ -1,263 +1,220 @@
 // ============================================================
-//  news.js — Actualites : GNews API + likes + commentaires
+//  news.js — Actualites
+//  API : NewsData.io (autorise les appels navigateur, CORS OK)
+//  Likes + commentaires persistants via localStorage
 // ============================================================
 
 (function () {
 
-    // ── Config ──────────────────────────────────────────────
-    const API_KEY      = '55a3e66be87a76d4f7ac7755efee47c6';
-    const API_BASE     = 'https://gnews.io/api/v4/search';
-    const MAX_RESULTS  = 9;
-    const STORAGE_KEY  = 'hk_news_interactions';
+    // ── Config ───────────────────────────────────────────────
+    // NewsData.io — gratuit 200 req/jour, CORS autorise
+    // Cle GNews conservee pour reference : 55a3e66be87a76d4f7ac7755efee47c6
+    const API_KEY   = 'pub_86998cde62374e1a87e3fc3e3f68af4a9f68';
+    const API_BASE  = 'https://newsdata.io/api/1/news';
+    const STORAGE   = 'hk_news_v2';
 
+    // Categories affichees
     const CATEGORIES = [
-        { label: 'Cybersecurite', query: 'cybersecurity' },
-        { label: 'Reseaux',       query: 'network security' },
-        { label: 'Data',          query: 'data privacy' },
-        { label: 'IA',            query: 'artificial intelligence' },
-        { label: 'Hacking',       query: 'hacking' },
-        { label: 'Dev Web',       query: 'web development' },
+        { label: 'Cybersecurite', q: 'cybersecurity',          cat: 'technology' },
+        { label: 'Reseaux',       q: 'network security',       cat: 'technology' },
+        { label: 'Data',          q: 'data privacy',           cat: 'technology' },
+        { label: 'IA',            q: 'artificial intelligence',cat: 'technology' },
+        { label: 'Hacking',       q: 'hacking',                cat: 'technology' },
+        { label: 'Dev Web',       q: 'web development',        cat: 'technology' },
     ];
 
-    // ── State ────────────────────────────────────────────────
-    let currentQuery = 'cybersecurity';
-    let currentPage  = 1;
+    // ── Etat ─────────────────────────────────────────────────
+    let currentCat   = CATEGORIES[0];
+    let nextPage     = null;   // token de pagination NewsData
     let searchTimer  = null;
 
-    // ── DOM refs ─────────────────────────────────────────────
-    const grid         = () => document.getElementById('newsGrid');
-    const loadMoreWrap = () => document.getElementById('loadMoreWrap');
-    const searchInput  = () => document.getElementById('newsSearch');
+    // ── DOM ──────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
 
-    // ── LocalStorage helpers ─────────────────────────────────
-    function getData() {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-        catch { return {}; }
-    }
+    // ── LocalStorage ─────────────────────────────────────────
+    function getData()     { try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; } catch { return {}; } }
+    function saveData(d)   { localStorage.setItem(STORAGE, JSON.stringify(d)); }
 
-    function saveData(d) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-    }
-
-    function getArticleKey(article) {
-        const raw = (article.url || article.title || '').slice(0, 80);
-        // Simple hash → base62-ish
+    function articleKey(a) {
+        const raw = (a.link || a.title || '').slice(0, 80);
         let h = 0;
         for (let i = 0; i < raw.length; i++) h = (Math.imul(31, h) + raw.charCodeAt(i)) | 0;
-        return 'a' + Math.abs(h).toString(36);
+        return 'n' + Math.abs(h).toString(36);
     }
 
-    function getLikes(key)    { return getData()[key]?.likes    || 0; }
-    function hasLiked(key)    { return !!getData()[key]?.userLiked; }
-    function getComments(key) { return getData()[key]?.comments || []; }
+    function getLikes(k)    { return getData()[k]?.likes    || 0; }
+    function hasLiked(k)    { return !!getData()[k]?.liked; }
+    function getComments(k) { return getData()[k]?.comments || []; }
 
-    function toggleLike(key) {
+    function toggleLike(k) {
         const d = getData();
-        if (!d[key]) d[key] = { likes: 0, userLiked: false, comments: [] };
-        d[key].userLiked = !d[key].userLiked;
-        d[key].likes = Math.max(0, d[key].likes + (d[key].userLiked ? 1 : -1));
+        if (!d[k]) d[k] = { likes: 0, liked: false, comments: [] };
+        d[k].liked  = !d[k].liked;
+        d[k].likes  = Math.max(0, d[k].likes + (d[k].liked ? 1 : -1));
         saveData(d);
-        return d[key];
+        return d[k];
     }
 
-    function addComment(key, text) {
+    function addComment(k, text) {
         const d = getData();
-        if (!d[key]) d[key] = { likes: 0, userLiked: false, comments: [] };
-        d[key].comments.push({
+        if (!d[k]) d[k] = { likes: 0, liked: false, comments: [] };
+        d[k].comments.push({
             text: text.trim().slice(0, 280),
-            date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }),
-            time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+            date: new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }),
+            time: new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' })
         });
         saveData(d);
-        return d[key].comments;
+        return d[k].comments;
     }
 
-    // ── API ──────────────────────────────────────────────────
-    async function fetchArticles(query, page, lang = 'fr') {
-        const url = `${API_BASE}?q=${encodeURIComponent(query)}&lang=${lang}&max=${MAX_RESULTS}&page=${page}&token=${API_KEY}`;
-        const res = await fetch(url);
+    // ── API NewsData.io ───────────────────────────────────────
+    async function fetchNews(cat, page = null) {
+        // Params de base
+        const params = new URLSearchParams({
+            apikey:   API_KEY,
+            q:        cat.q,
+            language: 'fr,en',
+            size:     '9',
+        });
+
+        if (page) params.set('page', page);
+
+        const res = await fetch(`${API_BASE}?${params}`);
+
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));
-            throw Object.assign(new Error(err.errors?.[0] || `HTTP ${res.status}`), { status: res.status });
+            throw new Error(err.results?.message || `HTTP ${res.status}`);
         }
+
         const data = await res.json();
-        return data.articles || [];
+
+        if (data.status !== 'success') {
+            throw new Error(data.results?.message || 'Erreur API');
+        }
+
+        return {
+            articles: data.results || [],
+            nextPage: data.nextPage || null,
+        };
     }
 
-    async function loadArticles(query, page, append = false) {
-        if (!append) showSkeletons();
-        loadMoreWrap().style.display = 'none';
-
-        let articles = [];
-        try {
-            // Try French first, fallback to English
-            articles = await fetchArticles(query, page, 'fr');
-            if (articles.length === 0) {
-                articles = await fetchArticles(query, page, 'en');
-            }
-        } catch (err) {
-            if (!append) {
-                if (err.status === 429) {
-                    showState('fa-clock', 'Limite de 100 requetes/jour atteinte.', 'Revenez demain ou utilisez une autre cle.');
-                } else {
-                    showState('fa-exclamation-triangle', 'Impossible de charger les articles.', err.message || '');
-                }
-            }
-            return;
-        }
-
-        // Apply search filter client-side
-        const term = searchInput().value.toLowerCase().trim();
-        const filtered = term
-            ? articles.filter(a => (a.title + (a.description || '')).toLowerCase().includes(term))
-            : articles;
-
-        if (!append) grid().innerHTML = '';
-
-        if (filtered.length === 0 && !append) {
-            showState('fa-search', 'Aucun article trouve.', 'Essayez un autre filtre ou terme de recherche.');
-            return;
-        }
-
-        filtered.forEach((article, i) => {
-            const card = buildCard(article, query);
-            card.style.transitionDelay = `${i * 55}ms`;
-            grid().appendChild(card);
-        });
-
-        // Trigger reveal
-        requestAnimationFrame(() => {
-            grid().querySelectorAll('.news-card.reveal:not(.revealed)').forEach(el => {
-                el.classList.add('revealed');
-            });
-        });
-
-        if (articles.length >= MAX_RESULTS) {
-            loadMoreWrap().style.display = 'block';
-        }
-    }
-
-    // ── Card builder ─────────────────────────────────────────
-    function buildCard(article, query) {
-        const key       = getArticleKey(article);
-        const liked     = hasLiked(key);
-        const likeCount = getLikes(key);
-        const comments  = getComments(key);
-        const catLabel  = CATEGORIES.find(c => c.query === query)?.label || query;
+    // ── Rendu ─────────────────────────────────────────────────
+    function buildCard(article, cat) {
+        const k    = articleKey(article);
+        const liked = hasLiked(k);
+        const likes = getLikes(k);
+        const cmts  = getComments(k);
 
         const card = document.createElement('div');
         card.className = 'news-card reveal';
-        card.dataset.key = key;
+        card.dataset.key = k;
+
+        const img = article.image_url
+            ? `<img src="${esc(article.image_url)}" alt="" loading="lazy"
+                    onerror="this.parentElement.innerHTML='<div class=news-card-img-placeholder><i class=fas\\ fa-newspaper></i></div>'">`
+            : `<div class="news-card-img-placeholder"><i class="fas fa-newspaper"></i></div>`;
+
+        const date = article.pubDate
+            ? new Date(article.pubDate).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' })
+            : '';
+
+        const source = article.source_name || article.source_id || 'Source';
 
         card.innerHTML = `
             <div class="news-card-img">
-                ${article.image
-                    ? `<img src="${escHtml(article.image)}" alt="" loading="lazy"
-                            onerror="this.parentElement.innerHTML='<div class=news-card-img-placeholder><i class=fas fa-newspaper></i></div>'">`
-                    : `<div class="news-card-img-placeholder"><i class="fas fa-newspaper"></i></div>`
-                }
-                <div class="news-card-cat">${escHtml(catLabel)}</div>
+                ${img}
+                <div class="news-card-cat">${esc(cat.label)}</div>
             </div>
             <div class="news-card-body">
                 <div class="news-card-source">
                     <i class="fas fa-rss"></i>
-                    <span class="src-name">${escHtml(article.source?.name || 'Source')}</span>
-                    &nbsp;·&nbsp; ${formatDate(article.publishedAt)}
+                    <span class="src-name">${esc(source)}</span>
+                    &nbsp;·&nbsp; ${date}
                 </div>
-                <div class="news-card-title">${escHtml(article.title || 'Sans titre')}</div>
-                <div class="news-card-desc">${escHtml(article.description || '')}</div>
+                <div class="news-card-title">${esc(article.title || 'Sans titre')}</div>
+                <div class="news-card-desc">${esc(article.description || '')}</div>
                 <div class="news-card-footer">
-                    <div class="news-card-date">${formatDate(article.publishedAt)}</div>
+                    <div class="news-card-date">${date}</div>
                     <button class="like-btn${liked ? ' liked' : ''}" aria-label="Liker">
                         <i class="fas fa-heart"></i>
-                        <span class="like-count">${likeCount}</span>
+                        <span class="like-count">${likes}</span>
                     </button>
                     <button class="comment-toggle-btn" aria-label="Commenter">
                         <i class="fas fa-comment"></i>
-                        <span class="cmt-count">${comments.length}</span>
+                        <span class="cmt-count">${cmts.length}</span>
                     </button>
-                    <a href="${escHtml(article.url)}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+                    <a href="${esc(article.link || '#')}" target="_blank" rel="noopener noreferrer" class="news-read-link">
                         Lire <i class="fas fa-external-link-alt"></i>
                     </a>
                 </div>
             </div>
-            <div class="comment-section" id="cs-${key}">
-                <div class="comments-list" id="cl-${key}">
-                    ${renderComments(comments)}
-                </div>
+            <div class="comment-section" id="cs-${k}">
+                <div class="comments-list" id="cl-${k}">${renderComments(cmts)}</div>
                 <div class="comment-form">
-                    <input type="text" class="comment-input" id="ci-${key}"
+                    <input type="text" class="comment-input" id="ci-${k}"
                            placeholder="Votre commentaire..." maxlength="280">
-                    <button class="comment-submit" aria-label="Envoyer">
+                    <button class="comment-submit">
                         <i class="fas fa-paper-plane"></i> Envoyer
                     </button>
                 </div>
             </div>
         `;
 
-        // ── Interactions ─────────────────────────────────────
         // Like
         const likeBtn = card.querySelector('.like-btn');
         likeBtn.addEventListener('click', e => {
             e.stopPropagation();
-            const result = toggleLike(key);
-            likeBtn.classList.toggle('liked', result.userLiked);
-            likeBtn.querySelector('.like-count').textContent = result.likes;
+            const r = toggleLike(k);
+            likeBtn.classList.toggle('liked', r.liked);
+            likeBtn.querySelector('.like-count').textContent = r.likes;
             likeBtn.style.transform = 'scale(1.25)';
             setTimeout(() => { likeBtn.style.transform = ''; }, 200);
         });
 
-        // Comment toggle
+        // Toggle commentaires
         const toggleBtn = card.querySelector('.comment-toggle-btn');
-        const section   = card.querySelector(`#cs-${key}`);
-
+        const section   = card.querySelector(`#cs-${k}`);
         toggleBtn.addEventListener('click', e => {
             e.stopPropagation();
-            const isOpen = section.classList.toggle('open');
-            toggleBtn.classList.toggle('open', isOpen);
-            if (isOpen) {
-                card.querySelector(`#ci-${key}`).focus();
-            }
+            const open = section.classList.toggle('open');
+            toggleBtn.classList.toggle('open', open);
+            if (open) card.querySelector(`#ci-${k}`).focus();
         });
 
-        // Comment submit
-        const input  = card.querySelector(`#ci-${key}`);
+        // Envoyer commentaire
+        const input  = card.querySelector(`#ci-${k}`);
         const submit = card.querySelector('.comment-submit');
-
-        function sendComment() {
-            const text = input.value.trim();
-            if (!text) return;
-            const updated = addComment(key, text);
-            card.querySelector(`#cl-${key}`).innerHTML = renderComments(updated);
+        const send   = () => {
+            const t = input.value.trim();
+            if (!t) return;
+            const updated = addComment(k, t);
+            card.querySelector(`#cl-${k}`).innerHTML = renderComments(updated);
             card.querySelector('.cmt-count').textContent = updated.length;
             input.value = '';
             input.focus();
-        }
-
-        submit.addEventListener('click', sendComment);
-        input.addEventListener('keydown', e => { if (e.key === 'Enter') sendComment(); });
+        };
+        submit.addEventListener('click', send);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
 
         return card;
     }
 
-    function renderComments(comments) {
-        if (!comments.length) {
-            return `<p class="comments-empty">Aucun commentaire — soyez le premier !</p>`;
-        }
-        return comments.map(c => `
+    function renderComments(list) {
+        if (!list.length) return `<p class="comments-empty">Aucun commentaire — soyez le premier !</p>`;
+        return list.map(c => `
             <div class="comment-item">
                 <div class="comment-meta">
                     <i class="fas fa-user-circle"></i> Visiteur
                     <span class="comment-date">${c.date} · ${c.time}</span>
                 </div>
-                <div class="comment-text">${escHtml(c.text)}</div>
+                <div class="comment-text">${esc(c.text)}</div>
             </div>
         `).join('');
     }
 
-    // ── UI states ────────────────────────────────────────────
-    function showSkeletons(n = 6) {
-        grid().innerHTML = Array.from({ length: n }, () => `
+    // ── States ────────────────────────────────────────────────
+    function showSkeletons() {
+        $('newsGrid').innerHTML = Array(6).fill(0).map(() => `
             <div class="skeleton-card">
                 <div class="skeleton-img"></div>
                 <div class="skeleton-body">
@@ -272,7 +229,7 @@
     }
 
     function showState(icon, msg, sub = '') {
-        grid().innerHTML = `
+        $('newsGrid').innerHTML = `
             <div class="news-state">
                 <i class="fas ${icon}"></i>
                 <p>${msg}</p>
@@ -281,59 +238,93 @@
         `;
     }
 
-    // ── Utilities ────────────────────────────────────────────
-    function escHtml(str) {
+    // ── Load ──────────────────────────────────────────────────
+    async function load(cat, page = null, append = false) {
+        if (!append) { showSkeletons(); nextPage = null; }
+        $('loadMoreWrap').style.display = 'none';
+
+        let data;
+        try {
+            data = await fetchNews(cat, page);
+        } catch (err) {
+            if (!append) showState('fa-exclamation-triangle', 'Impossible de charger les articles.', err.message);
+            console.error('NewsData error:', err);
+            return;
+        }
+
+        // Filtre recherche cote client
+        const term = $('newsSearch').value.toLowerCase().trim();
+        const list = term
+            ? data.articles.filter(a => ((a.title || '') + (a.description || '')).toLowerCase().includes(term))
+            : data.articles;
+
+        if (!append) $('newsGrid').innerHTML = '';
+
+        if (!list.length && !append) {
+            showState('fa-search', 'Aucun article trouve.', 'Essayez un autre filtre ou terme de recherche.');
+            return;
+        }
+
+        list.forEach((article, i) => {
+            const card = buildCard(article, cat);
+            card.style.transitionDelay = `${i * 55}ms`;
+            $('newsGrid').appendChild(card);
+        });
+
+        // Reveal
+        requestAnimationFrame(() => {
+            $('newsGrid').querySelectorAll('.news-card:not(.revealed)').forEach(el => {
+                el.classList.add('revealed');
+            });
+        });
+
+        nextPage = data.nextPage;
+        if (nextPage) $('loadMoreWrap').style.display = 'block';
+    }
+
+    // ── Utilitaire ────────────────────────────────────────────
+    function esc(str) {
         const d = document.createElement('div');
-        d.textContent = String(str);
+        d.textContent = String(str || '');
         return d.innerHTML;
     }
 
-    function formatDate(iso) {
-        if (!iso) return '';
-        return new Date(iso).toLocaleDateString('fr-FR', {
-            day: '2-digit', month: 'short', year: 'numeric'
-        });
-    }
-
-    // ── Init ─────────────────────────────────────────────────
+    // ── Init ──────────────────────────────────────────────────
     function init() {
-        // Build filter buttons
-        const toolbar = document.getElementById('newsToolbar');
+        const toolbar = $('newsToolbar');
+
+        // Injecter les boutons filtres avant le champ de recherche
+        const searchWrap = toolbar.querySelector('.news-search-wrap');
+
         CATEGORIES.forEach(cat => {
             const btn = document.createElement('button');
-            btn.className = 'filter-btn' + (cat.query === currentQuery ? ' active' : '');
-            btn.dataset.query = cat.query;
+            btn.className = 'filter-btn' + (cat === currentCat ? ' active' : '');
             btn.textContent = cat.label;
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentQuery = cat.query;
-                currentPage  = 1;
-                loadArticles(currentQuery, currentPage, false);
+                currentCat = cat;
+                nextPage   = null;
+                load(currentCat, null, false);
             });
-            toolbar.appendChild(btn);
+            toolbar.insertBefore(btn, searchWrap);
         });
 
-        // Search
-        searchInput().addEventListener('input', () => {
+        // Recherche
+        $('newsSearch').addEventListener('input', () => {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-                currentPage = 1;
-                loadArticles(currentQuery, currentPage, false);
-            }, 480);
+            searchTimer = setTimeout(() => load(currentCat, null, false), 480);
         });
 
         // Load more
-        document.getElementById('loadMoreBtn').addEventListener('click', () => {
-            currentPage++;
-            loadArticles(currentQuery, currentPage, true);
+        $('loadMoreBtn').addEventListener('click', () => {
+            if (nextPage) load(currentCat, nextPage, true);
         });
 
-        // Initial load
-        loadArticles(currentQuery, 1, false);
+        // Chargement initial
+        load(currentCat, null, false);
     }
 
-    // Run after DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

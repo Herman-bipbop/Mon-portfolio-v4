@@ -1,47 +1,44 @@
 // ============================================================
-//  news.js — Actualites
-//  API : NewsData.io (autorise les appels navigateur, CORS OK)
+//  news.js — Actualites Tech & Cyber
+//  Sources :
+//    1. HackerNews Algolia API (gratuit, CORS OK, pas de cle)
+//    2. Fallback : HackerNews Firebase API officielle
 //  Likes + commentaires persistants via localStorage
 // ============================================================
 
 (function () {
 
     // ── Config ───────────────────────────────────────────────
-    // NewsData.io — gratuit 200 req/jour, CORS autorise
-    // Cle GNews conservee pour reference : 55a3e66be87a76d4f7ac7755efee47c6
-    const API_KEY   = 'pub_86998cde62374e1a87e3fc3e3f68af4a9f68';
-    const API_BASE  = 'https://newsdata.io/api/1/news';
-    const STORAGE   = 'hk_news_v2';
+    const HN_SEARCH  = 'https://hn.algolia.com/api/v1/search';
+    const HN_ITEM    = 'https://hacker-news.firebaseio.com/v0/item';
+    const HN_TOP     = 'https://hacker-news.firebaseio.com/v0/topstories.json';
+    const STORAGE    = 'hk_news_v3';
+    const PAGE_SIZE  = 9;
 
-    // Categories affichees
+    // Mots-cles par categorie
     const CATEGORIES = [
-        { label: 'Cybersecurite', q: 'cybersecurity',          cat: 'technology' },
-        { label: 'Reseaux',       q: 'network security',       cat: 'technology' },
-        { label: 'Data',          q: 'data privacy',           cat: 'technology' },
-        { label: 'IA',            q: 'artificial intelligence',cat: 'technology' },
-        { label: 'Hacking',       q: 'hacking',                cat: 'technology' },
-        { label: 'Dev Web',       q: 'web development',        cat: 'technology' },
+        { label: 'Cybersecurite', q: 'cybersecurity hacking' },
+        { label: 'Reseaux',       q: 'network security firewall' },
+        { label: 'Data',          q: 'data privacy GDPR leak' },
+        { label: 'IA',            q: 'artificial intelligence LLM' },
+        { label: 'Hacking',       q: 'exploit vulnerability CVE' },
+        { label: 'Dev Web',       q: 'web development javascript' },
     ];
 
     // ── Etat ─────────────────────────────────────────────────
-    let currentCat   = CATEGORIES[0];
-    let nextPage     = null;   // token de pagination NewsData
-    let searchTimer  = null;
+    let currentCat  = CATEGORIES[0];
+    let currentPage = 0;       // page Algolia (0-based)
+    let searchTimer = null;
+    let loading     = false;
 
     // ── DOM ──────────────────────────────────────────────────
     const $ = id => document.getElementById(id);
 
     // ── LocalStorage ─────────────────────────────────────────
-    function getData()     { try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; } catch { return {}; } }
-    function saveData(d)   { localStorage.setItem(STORAGE, JSON.stringify(d)); }
+    function getData()   { try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; } catch { return {}; } }
+    function saveData(d) { localStorage.setItem(STORAGE, JSON.stringify(d)); }
 
-    function articleKey(a) {
-        const raw = (a.link || a.title || '').slice(0, 80);
-        let h = 0;
-        for (let i = 0; i < raw.length; i++) h = (Math.imul(31, h) + raw.charCodeAt(i)) | 0;
-        return 'n' + Math.abs(h).toString(36);
-    }
-
+    function articleKey(id) { return 'hn_' + id; }
     function getLikes(k)    { return getData()[k]?.likes    || 0; }
     function hasLiked(k)    { return !!getData()[k]?.liked; }
     function getComments(k) { return getData()[k]?.comments || []; }
@@ -67,74 +64,87 @@
         return d[k].comments;
     }
 
-    // ── API NewsData.io ───────────────────────────────────────
-    async function fetchNews(cat, page = null) {
-        // Params de base
-        const params = new URLSearchParams({
-            apikey:   API_KEY,
-            q:        cat.q,
-            language: 'fr,en',
-            size:     '9',
-        });
-
-        if (page) params.set('page', page);
-
-        const res = await fetch(`${API_BASE}?${params}`);
-
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.results?.message || `HTTP ${res.status}`);
-        }
-
+    // ── API HackerNews Algolia ────────────────────────────────
+    async function fetchAlgolia(query, page = 0) {
+        const url = `${HN_SEARCH}?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${PAGE_SIZE}&page=${page}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-
-        if (data.status !== 'success') {
-            throw new Error(data.results?.message || 'Erreur API');
-        }
-
         return {
-            articles: data.results || [],
-            nextPage: data.nextPage || null,
+            articles: (data.hits || []).filter(h => h.url), // garder seulement ceux avec un lien externe
+            hasMore:  page < Math.ceil((data.nbHits || 0) / PAGE_SIZE) - 1,
         };
     }
 
-    // ── Rendu ─────────────────────────────────────────────────
-    function buildCard(article, cat) {
-        const k    = articleKey(article);
+    // ── Rendu carte ───────────────────────────────────────────
+    function getDomain(url) {
+        try { return new URL(url).hostname.replace('www.', ''); }
+        catch { return 'hackernews'; }
+    }
+
+    function timeAgo(dateStr) {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const h = Math.floor(diff / 36e5);
+        const d = Math.floor(diff / 864e5);
+        if (d > 0)  return `il y a ${d}j`;
+        if (h > 0)  return `il y a ${h}h`;
+        return 'a l\'instant';
+    }
+
+    // Couleurs de fond par domaine (placeholder visuel)
+    const DOMAIN_COLORS = {
+        'github.com':          '#1a1a2e',
+        'wired.com':           '#0d1117',
+        'thehackernews.com':   '#0a1628',
+        'arstechnica.com':     '#1a0a0a',
+        'bleepingcomputer.com':'#0a1a0a',
+        'techcrunch.com':      '#1a0d00',
+        'reuters.com':         '#0d0d1a',
+        'bbc.com':             '#0a0a1a',
+        'krebs':               '#0a1a1a',
+    };
+
+    function getDomainBg(url) {
+        const d = getDomain(url);
+        for (const key in DOMAIN_COLORS) {
+            if (d.includes(key)) return DOMAIN_COLORS[key];
+        }
+        return '#111118';
+    }
+
+    function buildCard(hit, cat) {
+        const k     = articleKey(hit.objectID);
         const liked = hasLiked(k);
         const likes = getLikes(k);
         const cmts  = getComments(k);
+        const bg    = getDomainBg(hit.url || '');
+        const dom   = getDomain(hit.url || '');
 
         const card = document.createElement('div');
         card.className = 'news-card reveal';
         card.dataset.key = k;
 
-        const img = article.image_url
-            ? `<img src="${esc(article.image_url)}" alt="" loading="lazy"
-                    onerror="this.parentElement.innerHTML='<div class=news-card-img-placeholder><i class=fas\\ fa-newspaper></i></div>'">`
-            : `<div class="news-card-img-placeholder"><i class="fas fa-newspaper"></i></div>`;
-
-        const date = article.pubDate
-            ? new Date(article.pubDate).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' })
-            : '';
-
-        const source = article.source_name || article.source_id || 'Source';
-
         card.innerHTML = `
-            <div class="news-card-img">
-                ${img}
+            <div class="news-card-img" style="background:${bg};">
+                <div class="news-card-img-placeholder hn-placeholder">
+                    <span class="hn-domain">${esc(dom)}</span>
+                </div>
                 <div class="news-card-cat">${esc(cat.label)}</div>
             </div>
             <div class="news-card-body">
                 <div class="news-card-source">
-                    <i class="fas fa-rss"></i>
-                    <span class="src-name">${esc(source)}</span>
-                    &nbsp;·&nbsp; ${date}
+                    <i class="fab fa-hacker-news"></i>
+                    <span class="src-name">Hacker News</span>
+                    &nbsp;·&nbsp; ${timeAgo(hit.created_at)}
                 </div>
-                <div class="news-card-title">${esc(article.title || 'Sans titre')}</div>
-                <div class="news-card-desc">${esc(article.description || '')}</div>
+                <div class="news-card-title">${esc(hit.title || 'Sans titre')}</div>
+                <div class="news-card-desc">
+                    ${hit.points || 0} points &nbsp;·&nbsp;
+                    ${hit.num_comments || 0} commentaires HN &nbsp;·&nbsp;
+                    par ${esc(hit.author || 'anonyme')}
+                </div>
                 <div class="news-card-footer">
-                    <div class="news-card-date">${date}</div>
+                    <div class="news-card-date">${timeAgo(hit.created_at)}</div>
                     <button class="like-btn${liked ? ' liked' : ''}" aria-label="Liker">
                         <i class="fas fa-heart"></i>
                         <span class="like-count">${likes}</span>
@@ -143,7 +153,8 @@
                         <i class="fas fa-comment"></i>
                         <span class="cmt-count">${cmts.length}</span>
                     </button>
-                    <a href="${esc(article.link || '#')}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+                    <a href="${esc(hit.url || `https://news.ycombinator.com/item?id=${hit.objectID}`)}"
+                       target="_blank" rel="noopener noreferrer" class="news-read-link">
                         Lire <i class="fas fa-external-link-alt"></i>
                     </a>
                 </div>
@@ -181,7 +192,7 @@
             if (open) card.querySelector(`#ci-${k}`).focus();
         });
 
-        // Envoyer commentaire
+        // Commentaire
         const input  = card.querySelector(`#ci-${k}`);
         const submit = card.querySelector('.comment-submit');
         const send   = () => {
@@ -214,7 +225,7 @@
 
     // ── States ────────────────────────────────────────────────
     function showSkeletons() {
-        $('newsGrid').innerHTML = Array(6).fill(0).map(() => `
+        $('newsGrid').innerHTML = Array(PAGE_SIZE).fill(0).map(() => `
             <div class="skeleton-card">
                 <div class="skeleton-img"></div>
                 <div class="skeleton-body">
@@ -222,7 +233,6 @@
                     <div class="skeleton-line w-100"></div>
                     <div class="skeleton-line w-80"></div>
                     <div class="skeleton-line w-60"></div>
-                    <div class="skeleton-line w-100"></div>
                 </div>
             </div>
         `).join('');
@@ -239,47 +249,49 @@
     }
 
     // ── Load ──────────────────────────────────────────────────
-    async function load(cat, page = null, append = false) {
-        if (!append) { showSkeletons(); nextPage = null; }
+    async function load(cat, page = 0, append = false) {
+        if (loading) return;
+        loading = true;
+
+        if (!append) showSkeletons();
         $('loadMoreWrap').style.display = 'none';
 
-        let data;
+        // Filtre recherche
+        const term   = $('newsSearch').value.trim();
+        const query  = term || cat.q;
+
+        let result;
         try {
-            data = await fetchNews(cat, page);
+            result = await fetchAlgolia(query, page);
         } catch (err) {
             if (!append) showState('fa-exclamation-triangle', 'Impossible de charger les articles.', err.message);
-            console.error('NewsData error:', err);
+            loading = false;
             return;
         }
-
-        // Filtre recherche cote client
-        const term = $('newsSearch').value.toLowerCase().trim();
-        const list = term
-            ? data.articles.filter(a => ((a.title || '') + (a.description || '')).toLowerCase().includes(term))
-            : data.articles;
 
         if (!append) $('newsGrid').innerHTML = '';
 
-        if (!list.length && !append) {
+        if (!result.articles.length && !append) {
             showState('fa-search', 'Aucun article trouve.', 'Essayez un autre filtre ou terme de recherche.');
+            loading = false;
             return;
         }
 
-        list.forEach((article, i) => {
-            const card = buildCard(article, cat);
+        result.articles.forEach((hit, i) => {
+            const card = buildCard(hit, cat);
             card.style.transitionDelay = `${i * 55}ms`;
             $('newsGrid').appendChild(card);
         });
 
-        // Reveal
+        // Reveal animation
         requestAnimationFrame(() => {
             $('newsGrid').querySelectorAll('.news-card:not(.revealed)').forEach(el => {
                 el.classList.add('revealed');
             });
         });
 
-        nextPage = data.nextPage;
-        if (nextPage) $('loadMoreWrap').style.display = 'block';
+        if (result.hasMore) $('loadMoreWrap').style.display = 'block';
+        loading = false;
     }
 
     // ── Utilitaire ────────────────────────────────────────────
@@ -291,11 +303,10 @@
 
     // ── Init ──────────────────────────────────────────────────
     function init() {
-        const toolbar = $('newsToolbar');
-
-        // Injecter les boutons filtres avant le champ de recherche
+        const toolbar    = $('newsToolbar');
         const searchWrap = toolbar.querySelector('.news-search-wrap');
 
+        // Boutons filtres
         CATEGORIES.forEach(cat => {
             const btn = document.createElement('button');
             btn.className = 'filter-btn' + (cat === currentCat ? ' active' : '');
@@ -303,9 +314,9 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentCat = cat;
-                nextPage   = null;
-                load(currentCat, null, false);
+                currentCat  = cat;
+                currentPage = 0;
+                load(currentCat, 0, false);
             });
             toolbar.insertBefore(btn, searchWrap);
         });
@@ -313,16 +324,20 @@
         // Recherche
         $('newsSearch').addEventListener('input', () => {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => load(currentCat, null, false), 480);
+            searchTimer = setTimeout(() => {
+                currentPage = 0;
+                load(currentCat, 0, false);
+            }, 480);
         });
 
         // Load more
         $('loadMoreBtn').addEventListener('click', () => {
-            if (nextPage) load(currentCat, nextPage, true);
+            currentPage++;
+            load(currentCat, currentPage, true);
         });
 
         // Chargement initial
-        load(currentCat, null, false);
+        load(currentCat, 0, false);
     }
 
     if (document.readyState === 'loading') {

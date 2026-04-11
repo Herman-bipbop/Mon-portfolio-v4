@@ -1,21 +1,21 @@
 // ============================================================
 //  news.js — Actualites Tech & Cyber
-//  Sources :
-//    1. HackerNews Algolia API (gratuit, CORS OK, pas de cle)
-//    2. Fallback : HackerNews Firebase API officielle
-//  Likes + commentaires persistants via localStorage
+//  API      : HackerNews Algolia (gratuit, CORS OK, pas de cle)
+//  Images   : Microlink.io (extrait og:image de chaque article)
+//  Stockage : localStorage pour likes + commentaires
 // ============================================================
 
 (function () {
 
     // ── Config ───────────────────────────────────────────────
     const HN_SEARCH  = 'https://hn.algolia.com/api/v1/search';
-    const HN_ITEM    = 'https://hacker-news.firebaseio.com/v0/item';
-    const HN_TOP     = 'https://hacker-news.firebaseio.com/v0/topstories.json';
-    const STORAGE    = 'hk_news_v3';
+    const MICROLINK  = 'https://api.microlink.io';
     const PAGE_SIZE  = 9;
+    const STORAGE    = 'hk_news_v3';
 
-    // Mots-cles par categorie
+    // Cache images pour eviter les appels repetitifs
+    const imgCache = {};
+
     const CATEGORIES = [
         { label: 'Cybersecurite', q: 'cybersecurity hacking' },
         { label: 'Reseaux',       q: 'network security firewall' },
@@ -27,7 +27,7 @@
 
     // ── Etat ─────────────────────────────────────────────────
     let currentCat  = CATEGORIES[0];
-    let currentPage = 0;       // page Algolia (0-based)
+    let currentPage = 0;
     let searchTimer = null;
     let loading     = false;
 
@@ -46,8 +46,8 @@
     function toggleLike(k) {
         const d = getData();
         if (!d[k]) d[k] = { likes: 0, liked: false, comments: [] };
-        d[k].liked  = !d[k].liked;
-        d[k].likes  = Math.max(0, d[k].likes + (d[k].liked ? 1 : -1));
+        d[k].liked = !d[k].liked;
+        d[k].likes = Math.max(0, d[k].likes + (d[k].liked ? 1 : -1));
         saveData(d);
         return d[k];
     }
@@ -64,19 +64,46 @@
         return d[k].comments;
     }
 
-    // ── API HackerNews Algolia ────────────────────────────────
-    async function fetchAlgolia(query, page = 0) {
+    // ── API HackerNews ────────────────────────────────────────
+    async function fetchArticles(query, page = 0) {
         const url = `${HN_SEARCH}?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${PAGE_SIZE}&page=${page}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         return {
-            articles: (data.hits || []).filter(h => h.url), // garder seulement ceux avec un lien externe
+            articles: (data.hits || []).filter(h => h.url),
             hasMore:  page < Math.ceil((data.nbHits || 0) / PAGE_SIZE) - 1,
         };
     }
 
-    // ── Rendu carte ───────────────────────────────────────────
+    // ── Microlink — recupere og:image depuis l'URL de l'article ──
+    async function fetchImage(url) {
+        if (!url) return null;
+        if (imgCache[url] !== undefined) return imgCache[url];
+
+        try {
+            const res = await fetch(
+                `${MICROLINK}/?url=${encodeURIComponent(url)}&meta=false`,
+                { signal: AbortSignal.timeout(5000) }
+            );
+            if (!res.ok) { imgCache[url] = null; return null; }
+            const data = await res.json();
+            const img = data?.data?.image?.url || data?.data?.logo?.url || null;
+            imgCache[url] = img;
+            return img;
+        } catch {
+            imgCache[url] = null;
+            return null;
+        }
+    }
+
+    // ── Utilitaires ───────────────────────────────────────────
+    function esc(str) {
+        const d = document.createElement('div');
+        d.textContent = String(str || '');
+        return d.innerHTML;
+    }
+
     function getDomain(url) {
         try { return new URL(url).hostname.replace('www.', ''); }
         catch { return 'hackernews'; }
@@ -86,47 +113,29 @@
         const diff = Date.now() - new Date(dateStr).getTime();
         const h = Math.floor(diff / 36e5);
         const d = Math.floor(diff / 864e5);
-        if (d > 0)  return `il y a ${d}j`;
-        if (h > 0)  return `il y a ${h}h`;
-        return 'a l\'instant';
+        if (d > 365) return `il y a ${Math.floor(d/365)}an`;
+        if (d > 0)   return `il y a ${d}j`;
+        if (h > 0)   return `il y a ${h}h`;
+        return "a l'instant";
     }
 
-    // Couleurs de fond par domaine (placeholder visuel)
-    const DOMAIN_COLORS = {
-        'github.com':          '#1a1a2e',
-        'wired.com':           '#0d1117',
-        'thehackernews.com':   '#0a1628',
-        'arstechnica.com':     '#1a0a0a',
-        'bleepingcomputer.com':'#0a1a0a',
-        'techcrunch.com':      '#1a0d00',
-        'reuters.com':         '#0d0d1a',
-        'bbc.com':             '#0a0a1a',
-        'krebs':               '#0a1a1a',
-    };
-
-    function getDomainBg(url) {
-        const d = getDomain(url);
-        for (const key in DOMAIN_COLORS) {
-            if (d.includes(key)) return DOMAIN_COLORS[key];
-        }
-        return '#111118';
-    }
-
+    // ── Construction d'une carte ──────────────────────────────
     function buildCard(hit, cat) {
         const k     = articleKey(hit.objectID);
         const liked = hasLiked(k);
         const likes = getLikes(k);
         const cmts  = getComments(k);
-        const bg    = getDomainBg(hit.url || '');
         const dom   = getDomain(hit.url || '');
 
         const card = document.createElement('div');
         card.className = 'news-card reveal';
         card.dataset.key = k;
 
+        // Placeholder affiché immediatement, remplacé par la vraie image
         card.innerHTML = `
-            <div class="news-card-img" style="background:${bg};">
-                <div class="news-card-img-placeholder hn-placeholder">
+            <div class="news-card-img" id="img-${hit.objectID}">
+                <div class="news-card-img-placeholder">
+                    <i class="fas fa-newspaper"></i>
                     <span class="hn-domain">${esc(dom)}</span>
                 </div>
                 <div class="news-card-cat">${esc(cat.label)}</div>
@@ -134,14 +143,16 @@
             <div class="news-card-body">
                 <div class="news-card-source">
                     <i class="fab fa-hacker-news"></i>
-                    <span class="src-name">Hacker News</span>
+                    <span class="src-name">${esc(dom)}</span>
                     &nbsp;·&nbsp; ${timeAgo(hit.created_at)}
                 </div>
                 <div class="news-card-title">${esc(hit.title || 'Sans titre')}</div>
-                <div class="news-card-desc">
-                    ${hit.points || 0} points &nbsp;·&nbsp;
-                    ${hit.num_comments || 0} commentaires HN &nbsp;·&nbsp;
-                    par ${esc(hit.author || 'anonyme')}
+                <div class="news-card-meta">
+                    <i class="fas fa-arrow-up"></i> ${hit.points || 0}
+                    &nbsp;·&nbsp;
+                    <i class="fas fa-comments"></i> ${hit.num_comments || 0}
+                    &nbsp;·&nbsp;
+                    <i class="fas fa-user"></i> ${esc(hit.author || '?')}
                 </div>
                 <div class="news-card-footer">
                     <div class="news-card-date">${timeAgo(hit.created_at)}</div>
@@ -171,7 +182,34 @@
             </div>
         `;
 
-        // Like
+        // Charger l'image en arriere-plan via Microlink
+        if (hit.url) {
+            fetchImage(hit.url).then(imgUrl => {
+                const wrapper = card.querySelector(`#img-${hit.objectID}`);
+                if (!wrapper) return;
+                if (imgUrl) {
+                    // Remplacer le placeholder par la vraie image
+                    const placeholder = wrapper.querySelector('.news-card-img-placeholder');
+                    const badge       = wrapper.querySelector('.news-card-cat');
+
+                    const img = document.createElement('img');
+                    img.src     = imgUrl;
+                    img.alt     = '';
+                    img.loading = 'lazy';
+                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.78);transition:filter 0.4s,transform 0.4s';
+
+                    img.onerror = () => {
+                        // Si l'image ne se charge pas → on garde le placeholder
+                        img.remove();
+                    };
+
+                    wrapper.insertBefore(img, placeholder);
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+            });
+        }
+
+        // ── Like ─────────────────────────────────────────────
         const likeBtn = card.querySelector('.like-btn');
         likeBtn.addEventListener('click', e => {
             e.stopPropagation();
@@ -182,7 +220,7 @@
             setTimeout(() => { likeBtn.style.transform = ''; }, 200);
         });
 
-        // Toggle commentaires
+        // ── Toggle commentaires ───────────────────────────────
         const toggleBtn = card.querySelector('.comment-toggle-btn');
         const section   = card.querySelector(`#cs-${k}`);
         toggleBtn.addEventListener('click', e => {
@@ -192,7 +230,7 @@
             if (open) card.querySelector(`#ci-${k}`).focus();
         });
 
-        // Commentaire
+        // ── Envoyer commentaire ───────────────────────────────
         const input  = card.querySelector(`#ci-${k}`);
         const submit = card.querySelector('.comment-submit');
         const send   = () => {
@@ -248,7 +286,7 @@
         `;
     }
 
-    // ── Load ──────────────────────────────────────────────────
+    // ── Chargement ────────────────────────────────────────────
     async function load(cat, page = 0, append = false) {
         if (loading) return;
         loading = true;
@@ -256,13 +294,12 @@
         if (!append) showSkeletons();
         $('loadMoreWrap').style.display = 'none';
 
-        // Filtre recherche
-        const term   = $('newsSearch').value.trim();
-        const query  = term || cat.q;
+        const term  = $('newsSearch').value.trim();
+        const query = term || cat.q;
 
         let result;
         try {
-            result = await fetchAlgolia(query, page);
+            result = await fetchArticles(query, page);
         } catch (err) {
             if (!append) showState('fa-exclamation-triangle', 'Impossible de charger les articles.', err.message);
             loading = false;
@@ -283,7 +320,6 @@
             $('newsGrid').appendChild(card);
         });
 
-        // Reveal animation
         requestAnimationFrame(() => {
             $('newsGrid').querySelectorAll('.news-card:not(.revealed)').forEach(el => {
                 el.classList.add('revealed');
@@ -294,19 +330,11 @@
         loading = false;
     }
 
-    // ── Utilitaire ────────────────────────────────────────────
-    function esc(str) {
-        const d = document.createElement('div');
-        d.textContent = String(str || '');
-        return d.innerHTML;
-    }
-
     // ── Init ──────────────────────────────────────────────────
     function init() {
         const toolbar    = $('newsToolbar');
         const searchWrap = toolbar.querySelector('.news-search-wrap');
 
-        // Boutons filtres
         CATEGORIES.forEach(cat => {
             const btn = document.createElement('button');
             btn.className = 'filter-btn' + (cat === currentCat ? ' active' : '');
@@ -321,7 +349,6 @@
             toolbar.insertBefore(btn, searchWrap);
         });
 
-        // Recherche
         $('newsSearch').addEventListener('input', () => {
             clearTimeout(searchTimer);
             searchTimer = setTimeout(() => {
@@ -330,13 +357,11 @@
             }, 480);
         });
 
-        // Load more
         $('loadMoreBtn').addEventListener('click', () => {
             currentPage++;
             load(currentCat, currentPage, true);
         });
 
-        // Chargement initial
         load(currentCat, 0, false);
     }
 

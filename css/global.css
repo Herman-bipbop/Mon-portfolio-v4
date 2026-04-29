@@ -92,7 +92,8 @@ body {
 
 a { text-decoration: none; color: inherit; }
 
-.container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+.container { max-width: 100%; margin: 0 auto; padding: 0 5vw; box-sizing: border-box; }
+.container-full { width: 100%; padding: 0 5vw; box-sizing: border-box; }
 
 /* ----------------------------------------------------------
    NAVIGATION
@@ -109,8 +110,8 @@ a { text-decoration: none; color: inherit; }
 #nav.scrolled { box-shadow: var(--sh-md); }
 
 .nav-inner {
-    max-width: 1280px; margin: 0 auto;
-    padding: 0 1.25rem; height: 64px;
+    max-width: 100%; margin: 0 auto;
+    padding: 0 5vw; height: 64px;
     display: flex; align-items: center;
     justify-content: space-between; gap: 1rem;
     width: 100%; box-sizing: border-box;

@@ -7,9 +7,9 @@
    ---------------------------------------------------------- */
 .hero {
     min-height: 100vh; display: flex; align-items: center;
-    position: relative; overflow: hidden;
+    position: relative; overflow-x: hidden; overflow-y: visible;
     background: var(--dark); padding-top: 64px;
-    max-width: 100vw; width: 100%;
+    width: 100%;
 }
 
 #grid-canvas {
@@ -34,17 +34,19 @@
 .hero-name {
     font-family: var(--font-sans); font-weight: 800;
     line-height: 0.9; letter-spacing: -0.03em;
-    color: var(--on-dark); margin-bottom: 1.5rem; overflow: hidden;
-    width: 100%;
+    color: var(--on-dark); margin-bottom: 1.5rem;
+    width: 100%; overflow: visible;
 }
 
 .hero-name .line-1,
 .hero-name .line-2 {
     display: block;
-    font-size: clamp(4rem, 13.5vw, 14rem);
+    /* KOUOGANG = 8 chars, doit tenir dans 90vw → 10vw par char */
+    font-size: 10vw;
     opacity: 0; transform: translateY(60px);
     white-space: nowrap;
     width: 100%;
+    overflow: visible;
 }
 
 .hero-name .line-1 { animation: hSlideUp 0.8s cubic-bezier(0.2,0,0,1) 0.5s forwards; }
@@ -250,7 +252,7 @@
     .featured-card:last-child { grid-column: auto; }
     .hero-cta { flex-direction: column; align-items: flex-start; }
     .hero-name .line-2 { -webkit-text-stroke: 1px var(--on-dark); }
-    .hero-name .line-1, .hero-name .line-2 { font-size: clamp(4rem, 13.5vw, 14rem); }
+
     .strip-code { font-size: 0.68rem; overflow-x: auto; }
     .strip-inner { gap: 2rem; }
     .hero-scroll { display: none; }
@@ -268,7 +270,7 @@
 
     .hero-name .line-1,
     .hero-name .line-2 {
-        font-size: 13.5vw;
+        font-size: 13vw;
         white-space: nowrap;
         overflow: hidden;
         display: block;

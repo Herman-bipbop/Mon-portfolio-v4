@@ -47,4 +47,35 @@
     }
     resize();
     window.addEventListener('resize', resize);
+
+    // ── Fit hero name to viewport width ──────────────────────
+    function fitHeroName() {
+        const line1 = document.querySelector('.hero-name .line-1');
+        const line2 = document.querySelector('.hero-name .line-2');
+        if (!line1 || !line2) return;
+
+        const availableW = window.innerWidth * 0.90; // 90vw disponible
+        const padding    = window.innerWidth * 0.05; // 5vw padding gauche
+
+        // Test sur line2 (KOUOGANG = le plus long)
+        line2.style.fontSize = '10vw';
+        let size = window.innerWidth * 0.10; // commence à 10vw
+
+        // Augmenter jusqu'à remplir sans dépasser
+        while (line2.scrollWidth < availableW && size < window.innerWidth * 0.15) {
+            size += 0.5;
+            line1.style.fontSize = size + 'px';
+            line2.style.fontSize = size + 'px';
+        }
+        // Reculer si ça dépasse
+        while (line2.scrollWidth > availableW && size > 20) {
+            size -= 0.5;
+            line1.style.fontSize = size + 'px';
+            line2.style.fontSize = size + 'px';
+        }
+    }
+
+    fitHeroName();
+    window.addEventListener('resize', fitHeroName);
+
 })();

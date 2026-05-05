@@ -41,12 +41,12 @@
 .hero-name .line-1,
 .hero-name .line-2 {
     display: block;
-    /* KOUOGANG = 8 chars, doit tenir dans 90vw → 10vw par char */
     font-size: 10vw;
     opacity: 0; transform: translateY(60px);
     white-space: nowrap;
     width: 100%;
     overflow: visible;
+    /* La taille exacte est recalculée par home.js au chargement */
 }
 
 .hero-name .line-1 { animation: hSlideUp 0.8s cubic-bezier(0.2,0,0,1) 0.5s forwards; }

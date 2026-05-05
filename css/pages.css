@@ -1,4 +1,10 @@
+/* ============================================================
+   PAGES.CSS — inner pages (about, projects, skills, journey, contact)
+   ============================================================ */
 
+/* ----------------------------------------------------------
+   PAGE HERO — always dark
+   ---------------------------------------------------------- */
 .page-hero {
     background: var(--dark); padding: 9rem 0 5rem;
     position: relative; overflow: hidden;
@@ -592,4 +598,51 @@
 
 @media (max-width: 640px) {
     .soft-skills-grid { grid-template-columns: 1fr; }
+}
+
+
+/* Niveaux et jauges masques */
+.tech-level { display: none !important; }
+.level-bar { display: none !important; }
+
+/* ── Placeholders projets (quand pas d'image) ── */
+.proj-img-fallback {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+}
+
+.proj-img-fallback span {
+    font-family: var(--font-sans);
+    font-size: 4rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.06);
+    letter-spacing: -0.04em;
+    user-select: none;
+}
+
+/* ── Placeholders galerie ── */
+.gallery-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-sunken);
+}
+
+.gallery-placeholder span {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+}
+
+/* ── Tech cards sans niveau : centrer le contenu ── */
+.tech-card {
+    padding: 1.75rem 1.25rem;
+    justify-content: center;
+}
+
+.tech-name {
+    margin-bottom: 0;
 }

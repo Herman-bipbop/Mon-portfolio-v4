@@ -144,7 +144,7 @@
 .featured { padding: 6rem 0; background: var(--bg); }
 
 .featured-grid {
-    display: grid; grid-template-columns: repeat(3,1fr);
+    display: grid; grid-template-columns: repeat(2,1fr);
     gap: 2px; background: var(--bd);
     box-shadow: var(--sh-md);
     width: 100%;
@@ -242,14 +242,12 @@
 @media (max-width: 1024px) {
     .stats-grid    { grid-template-columns: repeat(2,1fr); }
     .featured-grid { grid-template-columns: 1fr 1fr; }
-    .featured-card:last-child { grid-column: span 2; }
     .strip-inner   { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 
 @media (max-width: 768px) {
     .stats-grid { grid-template-columns: repeat(2,1fr); }
     .featured-grid { grid-template-columns: 1fr; }
-    .featured-card:last-child { grid-column: auto; }
     .hero-cta { flex-direction: column; align-items: flex-start; }
     .hero-name .line-2 { -webkit-text-stroke: 1px var(--on-dark); }
 

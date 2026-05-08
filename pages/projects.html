@@ -1,324 +1,200 @@
 <!DOCTYPE html>
+
 <html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projets — Herman Kouogang</title>
+    <meta name="description" content="Herman Kouogang — Cybersecurite & Dev Web, Bachelor 2, Lille">
+    <title>Herman Kouogang — Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/pages.css">
-    <script>(function(){var t=localStorage.getItem('hk-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/home.css">
+    <!-- Apply saved theme before paint to prevent flash -->
+    <script>
+        (function(){var t=localStorage.getItem('hk-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
 </head>
 <body>
     <div id="loader" class="loader">
         <div class="loader-inner">
             <div class="loader-logo">HK</div>
             <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
-            <div class="loader-label">Chargement...</div>
+            <div class="loader-label">Initialisation...</div>
         </div>
     </div>
 
-    <nav id="nav">
-        <div class="nav-inner">
-            <a href="../index.html" class="nav-brand">Herman_K<span class="blink">_</span></a>
-            <div class="nav-links" id="navLinks">
-                <a href="../index.html">Accueil</a>
-                <a href="about.html">A propos</a>
-                <a href="projects.html">Projets</a>
-                <a href="skills.html">Competences</a>
-                <a href="journey.html">Parcours</a>
-                <a href="contact.html">Contact</a>
-            </div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Mode sombre">
-                <i class="fas fa-sun icon-sun"></i>
-                <i class="fas fa-moon icon-moon"></i>
-            </button>
-            <button class="burger" id="burger" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
+```
+<nav id="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-brand">Herman_K<span class="blink">_</span></a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="active">Accueil</a>
+            <a href="pages/about.html">A propos</a>
+            <a href="pages/projects.html">Projets</a>
+            <a href="pages/skills.html">Competences</a>
+            <a href="pages/journey.html">Parcours</a>
+            <a href="pages/contact.html">Contact</a>
         </div>
-    </nav>
+        <button class="theme-toggle" id="themeToggle" aria-label="Mode sombre">
+            <i class="fas fa-sun icon-sun"></i>
+            <i class="fas fa-moon icon-moon"></i>
+        </button>
+        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+</nav>
 
-
-    <section class="page-hero">
-        <div class="container">
-            <span class="page-hero-tag">Realisations</span>
-            <h1 class="page-hero-title">Mes Projets</h1>
-            <p class="page-hero-sub">Applications web, plateformes et outils developpes en formation et en stage.</p>
+<!-- HERO -->
+<section class="hero">
+    <canvas id="grid-canvas"></canvas>
+    <div class="hero-content">
+        <div class="hero-tag">Bachelor 2 — Cybersecurite / Dev Web</div>
+        <h1 class="hero-name">
+            <span class="line-1">HERMAN</span>
+            <span class="line-2">KOUOGANG</span>
+        </h1>
+        <p class="hero-subtitle" id="typeTarget"></p>
+        <p class="hero-desc">
+            Etudiant passionne par la cybersecurite et le developpement web.<br>
+            Du Cameroun a Lille, je transforme la curiosite en competences concretes.
+        </p>
+        <div class="hero-cta">
+            <a href="pages/projects.html" class="btn btn-primary">Voir mes projets</a>
+            <a href="pages/contact.html" class="btn btn-outline">Me contacter</a>
         </div>
-    </section>
+    </div>
+    <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
 
-    <section class="projects-section">
-        <div class="container">
-
-            <!--SEQUOIA DESKTOP -->
-            <div class="project-item reveal" id="sequoia">
-                <div class="project-img-wrap" data-name="SEQUOIA">
-
-                    <img src="../images/sequoia.jpg" alt="Sequoia Desktop">
-                </div>
-                <div class="project-info">
-                    <div class="project-number">01 — Stage MD Creations</div>
-                    <h2>Sequoia Desktop</h2>
-                    <div class="proj-sub">Application de gestion medicale</div>
-                    <p>Application web complete de gestion de patients pour cliniques et pharmacies. Systeme de consultation, gestion des antecedents, prescriptions, examens cliniques et tableau de bord. Authentification securisee et conformite RGPD.</p>
-                    <div class="project-tags">
-                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span><span>Figma</span><span>UX/UI</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://sequoia-desktop.vercel.app/" target="_blank" rel="noopener">
-                            <i class="fas fa-external-link-alt"></i> Voir le projet
-                        </a>
-                    </div>
-                </div>
+<!-- STATS -->
+<section class="stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item reveal" data-delay="0">
+                <div class="stat-number">4+</div>
+                <div class="stat-label">Projets realises</div>
             </div>
-
-            <div class="project-detail-section reveal">
-                <div class="container">
-                    <div class="detail-grid">
-                        <div class="detail-block">
-                            <h4>Contexte</h4>
-                            <ul>
-                                <li>Stage MD Creations, Montpellier</li>
-                                <li>Avril — juin 2025 (2 mois)</li>
-                                <li>Equipe : 1 dev senior (Tuteur), 1 designer</li>
-                                <li>Remplacement des systemes papier</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Hard Skills mobilises</h4>
-                            <ul>
-                                <li>Developpement Front-End complet</li>
-                                <li>Base de donnees MySQL relationnelle</li>
-                                <li>Back-End PHP, sessions securisees</li>
-                                <li>Protection XSS, CSRF, injections SQL</li>
-                                <li>Conformite RGPD — donnees medicales</li>
-                                <li>Maquettage Figma, responsive design</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Resultats obtenus</h4>
-                            <ul>
-                                <li>Deploye beta ( à venir ) — 1 cliniques pilotes</li>
-                                <li>Saisie reduite de 75%</li>
-                                <li>Satisfaction utilisateur : 90%</li>
-                                <li>Zero incident de securite</li>
-                                <li>Chargement &lt; 2s avec 300+ patients</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                    <div class="project-gallery">
-                        <!-- Remplacez src par vos captures reelles -->
-                        <div class="gallery-slot"><img src="../images/seq-dashboard.jpg" alt="Dashboard"></div>
-                        <div class="gallery-slot"><img src="../images/seq-patients.jpg" alt="Liste patients"></div>
-                        <div class="gallery-slot"><img src="../images/seq-consultation.jpg" alt="Consultation"></div>
-                        <div class="gallery-slot"><img src="../images/seq-prescription.jpg" alt="Prescription"></div>
-                    </div>
-                </div>
+            <div class="stat-item reveal" data-delay="100">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Stages professionnels</div>
             </div>
-
-            <!-- ========== DIZ ========== -->
-            <div class="project-item reveal" id="diz">
-                <div class="project-img-wrap" data-name="DIZ">
-                    <img src="../images/diz.jpg" alt="DIZ — Streaming musical">
-                </div>
-                <div class="project-info">
-                    <div class="project-number">02 — Projet personnel</div>
-                    <h2>DIZ</h2>
-                    <div class="proj-sub">Plateforme de streaming musical</div>
-                    <p>Plateforme de streaming JPOP / JAZZ / RAP avec une identite visuelle forte et une experience d'ecoute immersive. Lecteur audio HTML5 custom, gestion de playlists dynamiques, interface responsive et deploiement Firebase.</p>
-                    <div class="project-tags">
-                        <span>HTML/CSS</span><span>JavaScript</span><span>Web Audio API</span><span>Firebase</span><span>UI/UX</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://diz-1bd86.firebaseapp.com/" target="_blank" rel="noopener">
-                            <i class="fas fa-external-link-alt"></i> Voir le projet
-                        </a>
-                    </div>
-                </div>
+            <div class="stat-item reveal" data-delay="200">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Technologies maitrisees</div>
             </div>
-
-            <div class="project-detail-section reveal">
-                <div class="container">
-                    <div class="detail-grid">
-                        <div class="detail-block">
-                            <h4>Contexte</h4>
-                            <ul>
-                                <li>Projet personnel — Portfolio academique</li>
-                                <li>Septembre — Novembre 2024</li>
-                                <li>Projet de groupe, 1 mois et demi</li>
-                                <li>Passion musique + challenge UI/UX</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Hard Skills mobilises</h4>
-                            <ul>
-                            
-                                <li>Animations CSS avancees et transitions</li>
-                                <li>Gestion de playlists JavaScript</li>
-                                <li>Deploiement Firebase Hosting</li>
-                                <li>Optimisation lazy loading medias</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Resultats obtenus</h4>
-                            <ul>
-                                <li>Plateforme deployee sur Firebase</li>
-                                <li>Chargement moyen 2.5s</li>
-                                <li>Design apprecie lors des presentations</li>
-                                <li>Interface responsive tous appareils</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                    <div class="project-gallery">
-                        <div class="gallery-slot"><img src="../images/diz-accueil.jpg" alt="DIZ Accueil"></div>
-                        <div class="gallery-slot"><img src="../images/diz-lecteur.jpg" alt="DIZ Lecteur"></div>
-                        <div class="gallery-slot"><img src="../images/diz-playlist.jpg" alt="DIZ Playlist"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== INSTINCT ========== -->
-            <div class="project-item reveal" id="instinct">
-                <div class="project-img-wrap" data-name="INSTINCT">
-                    <img src="../images/instinct.jpg" alt="INSTINCT — Site restaurant">
-                </div>
-                <div class="project-info">
-                    <div class="project-number">03 — Projet academique</div>
-                    <h2>INSTINCT</h2>
-                    <div class="proj-sub">Site vitrine restaurant</div>
-                    <p>Site vitrine complet pour restaurant avec menu interactif a filtres par categorie, systeme de reservation avec formulaire PHP, galerie photos responsive et optimisation SEO. Note 18/20.</p>
-                    <div class="project-tags">
-                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>SEO</span><span>Responsive</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://instinct-seven.vercel.app/" target="_blank" rel="noopener">
-                            <i class="fas fa-external-link-alt"></i> Voir le projet
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-detail-section reveal">
-                <div class="container">
-                    <div class="detail-grid">
-                        <div class="detail-block">
-                            <h4>Contexte</h4>
-                            <ul>
-                                <li>Projet academique avec review formateur</li>
-                                <li>Avril 2025 </li>
-                                <li>Projet de groupe</li>
-                                <li>Brief client fictif complet</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Hard Skills mobilises</h4>
-                            <ul>
-                                <li>Menu interactif avec filtres JS</li>
-                                <li>Formulaire de reservation PHP</li>
-                                <li>Optimisation SEO on-page</li>
-                                <li>Validation W3C sans erreurs</li>
-                                <li>Design elegant et responsive</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Resultats obtenus</h4>
-                            <ul>
-                                <li>Note : 16/20 au projet academique</li>
-                                <li>Formulaire de reservation mi-operationnel</li>
-                                <li>Code valide W3C</li>
-                                <li>Deploye sur Vercel</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                    <div class="project-gallery">
-                        <div class="gallery-slot"><img src="../images/inst-accueil.jpg" alt="Instinct Accueil"></div>
-                        <div class="gallery-slot"><img src="../images/inst-menu.jpg" alt="Instinct Menu"></div>
-                        <div class="gallery-slot"><img src="../images/inst-reservation.jpg" alt="Instinct Reservation"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== CONVERTISSEUR ========== -->
-            <div class="project-item reveal" id="convertisseur">
-                <div class="project-img-wrap" data-name="DEVISES">
-                    <img src="../images/convertisseur.jpg" alt="Convertisseur de Devises">
-                </div>
-                <div class="project-info">
-                    <div class="project-number">04 — Projet personnel</div>
-                    <h2>Convertisseur de Devises</h2>
-                    <div class="proj-sub">Application web utilitaire</div>
-                    <p>Application de conversion de devises en temps reel integrant une API externe. 160+ devises disponibles, gestion complete des erreurs reseau, mise en cache et interface minimaliste deployee sur Vercel.</p>
-                    <div class="project-tags">
-                        <span>HTML/CSS</span><span>JavaScript</span><span>REST API</span><span>Async/Await</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://convertisseur-de-devises.vercel.app/" target="_blank" rel="noopener">
-                            <i class="fas fa-external-link-alt"></i> Voir le projet
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-detail-section reveal">
-                <div class="container">
-                    <div class="detail-grid">
-                        <div class="detail-block">
-                            <h4>Contexte</h4>
-                            <ul>
-                                <li>Exercice technique personnel</li>
-                                <li>Septembre 2024 — 2 semaines</li>
-                                <li>Maitrise des API externes et JS async</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Hard Skills mobilises</h4>
-                            <ul>
-                                <li>Fetch API et JavaScript asynchrone</li>
-                                <li>Gestion d'erreurs completes</li>
-                                <li>Mise en cache des resultats</li>
-                                <li>Interface mobile-first</li>
-                            </ul>
-                        </div>
-                        <div class="detail-block">
-                            <h4>Resultats obtenus</h4>
-                            <ul>
-                                <li>160+ devises disponibles</li>
-                                <li>Conversion en temps reel &lt; 1.5s</li>
-                                <li>Gestion d'erreurs complete</li>
-                                <li>Deploye sur Vercel</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                    <div class="project-gallery">
-                        <div class="gallery-slot"><img src="../images/conv-main.jpg" alt="Convertisseur Interface"></div>
-                        <div class="gallery-slot"><img src="../images/conv-result.jpg" alt="Convertisseur Resultat"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-inner container">
-            <div class="footer-brand">Herman Kouogang — 2025</div>
-            <div class="footer-socials">
-                <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/herman-kouogang-kouam/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://www.instagram.com/kasho.llds" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <div class="stat-item reveal" data-delay="300">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Ans de formation web</div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <script src="../js/loader.js"></script>
-    <script src="../js/nav.js"></script>
-    <script src="../js/animations.js"></script>
-    <script src="../js/projects.js"></script>
+<!-- FEATURED PROJECTS -->
+<section class="featured">
+    <div class="container">
+        <div class="section-head reveal">
+            <div class="section-tag">Realisations</div>
+            <h2 class="section-title">Projets recents</h2>
+        </div>
+        <div class="featured-grid">
+            <a href="pages/projects.html#sequoia" class="featured-card reveal">
+                <div class="featured-img" style="background-color:#111; background-image:url('images/sequoia.jpg'); background-size:cover;">
+                    <div class="featured-overlay"></div>
+                    <div class="featured-badge">Stage MD Creations</div>
+                </div>
+                <div class="featured-body">
+                    <h3>Sequoia Desktop</h3>
+                    <p>Application web de gestion de patients pour cliniques et pharmacies.</p>
+                    <div class="featured-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span>
+                    </div>
+                </div>
+            </a>
+            <a href="pages/projects.html#diz" class="featured-card reveal" data-delay="100">
+                <div class="featured-img" style="background-color:#111; background-image:url('images/diz.jpg'); background-size:cover;">
+                    <div class="featured-overlay"></div>
+                </div>
+                <div class="featured-body">
+                    <h3>DIZ</h3>
+                    <p>Plateforme de streaming musical JPOP/JAZZ/RAP avec lecteur audio custom.</p>
+                    <div class="featured-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>Firebase</span>
+                    </div>
+                </div>
+            </a>
+            <a href="pages/projects.html#instinct" class="featured-card reveal" data-delay="200">
+                <div class="featured-img" style="background-color:var(--dark); background-image:url('images/instinct.jpg'); background-size:cover;">
+                    <div class="featured-overlay"></div>
+                </div>
+                <div class="featured-body">
+                    <h3>INSTINCT</h3>
+                    <p>Site vitrine restaurant avec menu interactif et systeme de reservation.</p>
+                    <div class="featured-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+            <a href="pages/projects.html#mydigitalapi" class="featured-card reveal" data-delay="300">
+                <div class="featured-img" style="background-color:#0d0d1a;">
+                    <div class="featured-overlay"></div>
+                </div>
+                <div class="featured-body">
+                    <h3>MyDigitalAPI</h3>
+                    <p>Rick &amp; Morty Character Explorer en TypeScript vanilla. Tri, filtres, favoris, modal detail.</p>
+                    <div class="featured-tags">
+                        <span>TypeScript</span><span>REST API</span><span>localStorage</span>
+                    </div>
+                </div>
+            </a>
+        <div class="section-cta reveal">
+            <a href="pages/projects.html" class="btn btn-outline">Tous les projets</a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<section class="about-strip">
+    <div class="container">
+        <div class="strip-inner reveal">
+            <div class="strip-text">
+                <div class="section-tag">A propos</div>
+                <h2>Passionne par la cybersecurite et le dev web</h2>
+                <p>Inspire par des series comme Scorpion et MacGyver, j'ai quitte le Cameroun pour etudier en France. Aujourd'hui en Bachelor 2 a MY DIGITAL SCHOOL Lille, je recherche une alternance en developpement web ou cybersecurite.</p>
+                <a href="pages/about.html" class="btn btn-primary">En savoir plus</a>
+            </div>
+            <div class="strip-visual">
+                <div class="strip-code">
+                    <div class="code-line"><span class="code-kw">const</span> <span class="code-var">herman</span> = {</div>
+                    <div class="code-line code-indent"><span class="code-key">role</span>: <span class="code-str">"Dev Web &amp; Cybersec"</span>,</div>
+                    <div class="code-line code-indent"><span class="code-key">location</span>: <span class="code-str">"Lille, France"</span>,</div>
+                    <div class="code-line code-indent"><span class="code-key">available</span>: <span class="code-bool">true</span>,</div>
+                    <div class="code-line code-indent"><span class="code-key">seeking</span>: <span class="code-str">"Alternance"</span>,</div>
+                    <div class="code-line code-indent"><span class="code-key">passion</span>: [<span class="code-str">"security"</span>, <span class="code-str">"webdev"</span>]</div>
+                    <div class="code-line">};</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner container">
+        <div class="footer-brand">Herman Kouogang — 2025</div>
+        <div class="footer-socials">
+            <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/herman-kouogang-kouam/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/kasho.llds" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script src="js/loader.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/home.js"></script>
+<script src="js/animations.js"></script>
+```
+
 </body>
 </html>

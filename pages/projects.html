@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/pages.css">
-    <script>(function(){var t=localStorage.getItem('hk-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
     <div id="loader" class="loader">
@@ -20,368 +18,389 @@
         </div>
     </div>
 
-```
-<nav id="nav">
-    <div class="nav-inner">
-        <a href="../index.html" class="nav-brand">Herman_K<span class="blink">_</span></a>
-        <div class="nav-links" id="navLinks">
-            <a href="../index.html">Accueil</a>
-            <a href="about.html">A propos</a>
-            <a href="projects.html" class="active">Projets</a>
-            <a href="skills.html">Competences</a>
-            <a href="journey.html">Parcours</a>
-            <a href="contact.html">Contact</a>
+    <nav id="nav">
+        <div class="nav-inner">
+            <a href="../index.html" class="nav-brand">Herman_K<span class="blink">_</span></a>
+            <div class="nav-links" id="navLinks">
+                <a href="../index.html">Accueil</a>
+                <a href="about.html">A propos</a>
+                <a href="projects.html" class="active">Projets</a>
+                <a href="skills.html">Competences</a>
+                <a href="journey.html">Parcours</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Changer de theme">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </button>
+            <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="Mode sombre">
-            <i class="fas fa-sun icon-sun"></i>
-            <i class="fas fa-moon icon-moon"></i>
-        </button>
-        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-    </div>
-</nav>
+    </nav>
 
-<section class="page-hero">
-    <div class="container">
-        <span class="page-hero-tag">Realisations</span>
-        <h1 class="page-hero-title">Mes Projets</h1>
-        <p class="page-hero-sub">Applications web, plateformes et outils developpes en formation et en stage.</p>
-        <!-- ========== MYDIGITALAPI ========== -->
-        <div class="project-item reveal" id="sequoia">
-            <div class="project-img-wrap" data-name="SEQUOIA">
-                <!-- IMAGE PRINCIPALE SEQUOIA
-                     Remplacez src par votre image : src="../images/sequoia.jpg"
-                     Si aucune image n'est definie, le placeholder en fond s'affiche -->
-                <div class="proj-img-fallback"><span>SEQUOIA</span></div>
+    <section class="page-hero">
+        <div class="container">
+            <span class="page-hero-tag">Realisations</span>
+            <h1 class="page-hero-title">Mes Projets</h1>
+            <p class="page-hero-sub">Applications web, plateformes et outils developpes en formation et en stage.</p>
+        </div>
+    </section>
+
+    <section class="projects-section">
+        <div class="container">
+
+            <!-- PROJECT 1 — Sequoia Desktop -->
+            <div class="project-item reveal" id="sequoia">
+                <div class="project-img-wrap">
+                    <!-- Remplacer l'image ici : ajoutez src="chemin/vers/votre/image.jpg" dans la balise img ci-dessous -->
+                    <!-- ou cliquez sur le slot pour uploader une image depuis votre navigateur -->
+                    <!-- IMAGE SEQUOIA DESKTOP
+                         Remplacez la valeur de src par le chemin vers votre image
+                         Exemple : src="../images/sequoia.jpg"
+                         Formats acceptes : jpg, png, webp -->
+                    <img src="../images/sequoia.jpg" alt="Sequoia Desktop — Application de gestion medicale">
+                </div>
+                <div class="project-info">
+                    <div class="project-number">01 — Stage MD Creations</div>
+                    <h2>Sequoia Desktop</h2>
+                    <div class="proj-sub">Application de gestion medicale</div>
+                    <p>Application web complete de gestion de patients pour cliniques et pharmacies. Systeme de consultation, gestion des antecedents, prescriptions, examens cliniques et tableau de bord analytique. Deploiement avec authentification securisee.</p>
+                    <div class="project-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span><span>UX/UI</span><span>Figma</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://sequoia-desktop.vercel.app/" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="project-info">
-                <div class="project-number">01 — Stage MD Creations</div>
-                <h2>Sequoia Desktop</h2>
-                <div class="proj-sub">Application de gestion medicale</div>
-                <p>Application web complete de gestion de patients pour cliniques et pharmacies. Systeme de consultation, gestion des antecedents, prescriptions, examens cliniques et tableau de bord. Authentification securisee et conformite RGPD.</p>
-                <div class="project-tags">
-                    <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span><span>Figma</span><span>UX/UI</span>
+
+            <!-- PROJECT 1 — Detail -->
+            <div class="project-detail-section reveal">
+                <div class="container">
+                    <div class="detail-grid">
+                        <div class="detail-block">
+                            <h4>Contexte</h4>
+                            <ul>
+                                <li>Stage chez MD Creations, Montpellier</li>
+                                <li>Janvier — Mars 2025 (3 mois)</li>
+                                <li>Equipe : 1 dev senior + moi</li>
+                                <li>Besoin : remplacer les systemes papier</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Hard Skills mobilises</h4>
+                            <ul>
+                                <li>Developpement Front-End complet</li>
+                                <li>Base de donnees MySQL relationnelle</li>
+                                <li>Back-End PHP avec sessions securisees</li>
+                                <li>Protection XSS, CSRF, injections SQL</li>
+                                <li>Conformite RGPD — donnees medicales</li>
+                                <li>Maquettage Figma et responsive design</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Resultats obtenus</h4>
+                            <ul>
+                                <li>Application deployee — 2 cliniques pilotes</li>
+                                <li>Saisie reduite de 75% (objectif depasse)</li>
+                                <li>Satisfaction utilisateur : 90%</li>
+                                <li>Zero incident de securite depuis le lancement</li>
+                                <li>Chargement &lt; 2s avec 300+ patients</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Galerie images — cliquez pour ajouter vos captures -->
+                    <div class="section-tag" style="margin-bottom: 1rem;">Captures d'ecran du projet</div>
+                    <div class="project-gallery">
+                        <div class="gallery-slot" data-slot="seq-1"><img src="../images/seq-dashboard.jpg" alt="Sequoia — Dashboard"></div>
+                        <div class="gallery-slot" data-slot="seq-2"><img src="../images/seq-patients.jpg" alt="Sequoia — Liste patients"></div>
+                        <div class="gallery-slot" data-slot="seq-3"><img src="../images/seq-consultation.jpg" alt="Sequoia — Consultation"></div>
+                        <div class="gallery-slot" data-slot="seq-4"><img src="../images/seq-prescription.jpg" alt="Sequoia — Prescription"></div>
+                    </div>
                 </div>
-                <div class="project-links">
-                    <a href="https://sequoia-desktop.vercel.app/" target="_blank" rel="noopener">
-                        <i class="fas fa-external-link-alt"></i> Voir le projet
-                    </a>
+            </div>
+
+            <!-- PROJECT 2 — DIZ -->
+            <div class="project-item reveal" id="diz">
+                <div class="project-img-wrap">
+                    <!-- IMAGE DIZ
+                         Remplacez src par le chemin vers votre image
+                         Exemple : src="../images/diz.jpg" -->
+                    <img src="../images/diz.jpg" alt="DIZ — Plateforme de streaming musical">
                 </div>
+                <div class="project-info">
+                    <div class="project-number">02 — Projet personnel</div>
+                    <h2>DIZ</h2>
+                    <div class="proj-sub">Plateforme de streaming musical</div>
+                    <p>Plateforme de streaming JPOP / JAZZ / RAP avec une identite visuelle forte et une experience d'ecoute immersive. Lecteur audio HTML5 custom, gestion de playlists, interface responsive et deploiement Firebase.</p>
+                    <div class="project-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>Web Audio API</span><span>Firebase</span><span>UI/UX</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://diz-1bd86.firebaseapp.com/" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT 2 — Detail -->
+            <div class="project-detail-section reveal">
+                <div class="container">
+                    <div class="detail-grid">
+                        <div class="detail-block">
+                            <h4>Contexte</h4>
+                            <ul>
+                                <li>Projet personnel — Portfolio academique</li>
+                                <li>Septembre — Novembre 2024</li>
+                                <li>Projet individuel, 2 mois et demi</li>
+                                <li>Passion pour la musique et l'UI/UX</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Hard Skills mobilises</h4>
+                            <ul>
+                                <li>Lecteur audio HTML5 et Web Audio API</li>
+                                <li>Animations CSS avancees et transitions</li>
+                                <li>Gestion de playlists en JavaScript vanilla</li>
+                                <li>Deploiement Firebase Hosting</li>
+                                <li>Optimisation lazy loading medias</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Resultats obtenus</h4>
+                            <ul>
+                                <li>Plateforme deployee sur Firebase</li>
+                                <li>Chargement moyen 2.5s</li>
+                                <li>Design apprecie lors des presentations</li>
+                                <li>Interface responsive tous appareils</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="section-tag" style="margin-bottom: 1rem;">Captures d'ecran</div>
+                    <div class="project-gallery">
+                        <div class="gallery-slot" data-slot="diz-1"><img src="../images/diz-accueil.jpg" alt="DIZ — Accueil"></div>
+                        <div class="gallery-slot" data-slot="diz-2"><img src="../images/diz-lecteur.jpg" alt="DIZ — Lecteur"></div>
+                        <div class="gallery-slot" data-slot="diz-3"><img src="../images/diz-playlist.jpg" alt="DIZ — Playlist"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT 3 — INSTINCT -->
+            <div class="project-item reveal" id="instinct">
+                <div class="project-img-wrap">
+                    <!-- IMAGE INSTINCT
+                         Remplacez src par le chemin vers votre image
+                         Exemple : src="../images/instinct.jpg" -->
+                    <img src="../images/instinct.jpg" alt="INSTINCT — Site vitrine restaurant">
+                </div>
+                <div class="project-info">
+                    <div class="project-number">03 — Projet academique</div>
+                    <h2>INSTINCT</h2>
+                    <div class="proj-sub">Site vitrine restaurant</div>
+                    <p>Site vitrine complet pour restaurant avec menu interactif a filtres par categorie, systeme de reservation avec formulaire PHP, galerie photos responsive et optimisation SEO. Note 18/20.</p>
+                    <div class="project-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>SEO</span><span>Responsive</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://instinct-seven.vercel.app/" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT 3 — Detail -->
+            <div class="project-detail-section reveal">
+                <div class="container">
+                    <div class="detail-grid">
+                        <div class="detail-block">
+                            <h4>Contexte</h4>
+                            <ul>
+                                <li>Exercice academique avec review formateur</li>
+                                <li>Octobre — Novembre 2024</li>
+                                <li>Projet individuel, 1 mois et demi</li>
+                                <li>Client fictif — brief complet</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Hard Skills mobilises</h4>
+                            <ul>
+                                <li>Menu interactif avec filtres JS</li>
+                                <li>Formulaire de reservation PHP</li>
+                                <li>Optimisation SEO on-page</li>
+                                <li>Validation W3C sans erreurs</li>
+                                <li>Design elegant et responsive</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Resultats obtenus</h4>
+                            <ul>
+                                <li>Note : 18/20 au projet academique</li>
+                                <li>Formulaire de reservation operationnel</li>
+                                <li>Code valide W3C</li>
+                                <li>Deploye sur Vercel</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="section-tag" style="margin-bottom: 1rem;">Captures d'ecran</div>
+                    <div class="project-gallery">
+                        <div class="gallery-slot" data-slot="inst-1"><img src="../images/inst-accueil.jpg" alt="Instinct — Accueil"></div>
+                        <div class="gallery-slot" data-slot="inst-2"><img src="../images/inst-menu.jpg" alt="Instinct — Menu"></div>
+                        <div class="gallery-slot" data-slot="inst-3"><img src="../images/inst-reservation.jpg" alt="Instinct — Reservation"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT 4 — Convertisseur -->
+            <div class="project-item reveal" id="convertisseur">
+                <div class="project-img-wrap">
+                    <!-- IMAGE CONVERTISSEUR
+                         Remplacez src par le chemin vers votre image
+                         Exemple : src="../images/convertisseur.jpg" -->
+                    <img src="../images/convertisseur.jpg" alt="Convertisseur de Devises">
+                </div>
+                <div class="project-info">
+                    <div class="project-number">04 — Projet personnel</div>
+                    <h2>Convertisseur de Devises</h2>
+                    <div class="proj-sub">Application web utilitaire</div>
+                    <p>Application de conversion de devises en temps reel integrant une API externe, avec gestion complete des erreurs reseau, 160+ devises disponibles et interface minimaliste deployee sur Vercel.</p>
+                    <div class="project-tags">
+                        <span>HTML/CSS</span><span>JavaScript</span><span>REST API</span><span>Async/Await</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://convertisseur-de-devises.vercel.app/" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT 4 — Detail -->
+            <div class="project-detail-section reveal">
+                <div class="container">
+                    <div class="detail-grid">
+                        <div class="detail-block">
+                            <h4>Contexte</h4>
+                            <ul>
+                                <li>Exercice technique personnel</li>
+                                <li>Septembre 2024 — 2 semaines</li>
+                                <li>Maitrise des API externes et JS async</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Hard Skills mobilises</h4>
+                            <ul>
+                                <li>Fetch API et JavaScript asynchrone</li>
+                                <li>Gestion d'erreurs completes (offline, rate limit)</li>
+                                <li>Mise en cache des resultats</li>
+                                <li>Interface mobile-first</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Resultats obtenus</h4>
+                            <ul>
+                                <li>160+ devises disponibles</li>
+                                <li>Conversion en temps reel &lt; 1.5s</li>
+                                <li>Deploye sur Vercel</li>
+                                <li>Gestion d'erreurs complete</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="section-tag" style="margin-bottom: 1rem;">Captures d'ecran</div>
+                    <div class="project-gallery">
+                        <div class="gallery-slot" data-slot="conv-1"><img src="../images/conv-main.jpg" alt="Convertisseur — Interface"></div>
+                        <div class="gallery-slot" data-slot="conv-2"><img src="../images/conv-result.jpg" alt="Convertisseur — Resultat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== MYDIGITALAPI ========== -->
+            <div class="project-item reveal" id="mydigitalapi">
+                <div class="project-img-wrap" data-name="MYDIGITALAPI">
+                     <img src="../images/mydigitalapi.jpg" alt="MyDigitalAPI">
+                    <div class="proj-img-fallback"><span>RICK &amp; MORTY</span></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">05 — Projet academique B2</div>
+                    <h2>MyDigitalAPI</h2>
+                    <div class="proj-sub">Rick &amp; Morty Character Explorer</div>
+                    <p>Application front-end en TypeScript consommant l'API publique Rick &amp; Morty. Tri, filtrage, pagination et favoris persistants. Design sci-fi retro avec effets visuels. Architecture modulaire 100% vanilla — zero dependance externe.</p>
+                    <div class="project-tags">
+                        <span>TypeScript</span><span>HTML/CSS</span><span>REST API</span><span>localStorage</span><span>ES Modules</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://mydigitalapi.vercel.app/" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Voir le projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-detail-section reveal">
+                <div class="container">
+                    <div class="detail-grid">
+                        <div class="detail-block">
+                            <h4>Contexte</h4>
+                            <ul>
+                                <li>Module Dev Front-End — Classe B2</li>
+                                <li>Projet academique individuel</li>
+                                <li>Objectif : consommer une API REST publique</li>
+                                <li>Zero framework, Vanilla TypeScript</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Hard Skills mobilises</h4>
+                            <ul>
+                                <li>TypeScript strict — interfaces, types unions</li>
+                                <li>Fetch API et async/await</li>
+                                <li>Gestion d'etats UI loading / error / success</li>
+                                <li>Persistance favoris via localStorage</li>
+                                <li>Architecture ES Modules — 6 fichiers src/</li>
+                                <li>Pagination, tri et filtrage cote client</li>
+                            </ul>
+                        </div>
+                        <div class="detail-block">
+                            <h4>Fonctionnalites</h4>
+                            <ul>
+                                <li>Grille responsive avec animations</li>
+                                <li>Tri par nom ou nombre d'episodes</li>
+                                <li>Modal detail par personnage</li>
+                                <li>Statistiques en temps reel</li>
+                                <li>Vue Tous / Favoris persistants</li>
+                                <li>Design sci-fi retro, effets scanlines</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
+                    <div class="project-gallery">
+                        <div class="gallery-slot"><div class="gallery-placeholder"><span>Vue principale</span></div></div>
+                        <div class="gallery-slot"><div class="gallery-placeholder"><span>Modal personnage</span></div></div>
+                        <div class="gallery-slot"><div class="gallery-placeholder"><span>Vue Favoris</span></div></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <footer:
+        <div class="footer-inner container">
+            <div class="footer-brand">Herman Kouogang — 2025</div>
+            <div class="footer-socials">
+                <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/herman-kouogang-kouam/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/kasho.llds" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
+    </footer>
 
-        <div class="project-detail-section reveal">
-            <div class="container">
-                <div class="detail-grid">
-                    <div class="detail-block">
-                        <h4>Contexte</h4>
-                        <ul>
-                            <li>Stage MD Creations, Montpellier</li>
-                            <li>Janvier — Mars 2025 (3 mois)</li>
-                            <li>Equipe : 1 dev senior + moi</li>
-                            <li>Remplacement des systemes papier</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Hard Skills mobilises</h4>
-                        <ul>
-                            <li>Developpement Front-End complet</li>
-                            <li>Base de donnees MySQL relationnelle</li>
-                            <li>Back-End PHP, sessions securisees</li>
-                            <li>Protection XSS, CSRF, injections SQL</li>
-                            <li>Conformite RGPD — donnees medicales</li>
-                            <li>Maquettage Figma, responsive design</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Resultats obtenus</h4>
-                        <ul>
-                            <li>Deploye — 2 cliniques pilotes</li>
-                            <li>Saisie reduite de 75%</li>
-                            <li>Satisfaction utilisateur : 90%</li>
-                            <li>Zero incident de securite</li>
-                            <li>Chargement &lt; 2s avec 300+ patients</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                <div class="project-gallery">
-                    <!-- Remplacez src par vos captures reelles -->
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Dashboard</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Liste patients</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Consultation</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Prescription</span></div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== DIZ ========== -->
-        <div class="project-item reveal" id="diz">
-            <div class="project-img-wrap" data-name="DIZ">
-                <div class="proj-img-fallback"><span>DIZ</span></div>
-            </div>
-            <div class="project-info">
-                <div class="project-number">02 — Projet personnel</div>
-                <h2>DIZ</h2>
-                <div class="proj-sub">Plateforme de streaming musical</div>
-                <p>Plateforme de streaming JPOP / JAZZ / RAP avec une identite visuelle forte et une experience d'ecoute immersive. Lecteur audio HTML5 custom, gestion de playlists dynamiques, interface responsive et deploiement Firebase.</p>
-                <div class="project-tags">
-                    <span>HTML/CSS</span><span>JavaScript</span><span>Web Audio API</span><span>Firebase</span><span>UI/UX</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://diz-1bd86.firebaseapp.com/" target="_blank" rel="noopener">
-                        <i class="fas fa-external-link-alt"></i> Voir le projet
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="project-detail-section reveal">
-            <div class="container">
-                <div class="detail-grid">
-                    <div class="detail-block">
-                        <h4>Contexte</h4>
-                        <ul>
-                            <li>Projet personnel — Portfolio academique</li>
-                            <li>Septembre — Novembre 2024</li>
-                            <li>Projet individuel, 2 mois et demi</li>
-                            <li>Passion musique + challenge UI/UX</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Hard Skills mobilises</h4>
-                        <ul>
-                            <li>Lecteur audio HTML5 et Web Audio API</li>
-                            <li>Animations CSS avancees et transitions</li>
-                            <li>Gestion de playlists JavaScript vanilla</li>
-                            <li>Deploiement Firebase Hosting</li>
-                            <li>Optimisation lazy loading medias</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Resultats obtenus</h4>
-                        <ul>
-                            <li>Plateforme deployee sur Firebase</li>
-                            <li>Chargement moyen 2.5s</li>
-                            <li>Design apprecie lors des presentations</li>
-                            <li>Interface responsive tous appareils</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                <div class="project-gallery">
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>DIZ Accueil</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>DIZ Lecteur</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>DIZ Playlist</span></div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== INSTINCT ========== -->
-        <div class="project-item reveal" id="instinct">
-            <div class="project-img-wrap" data-name="INSTINCT">
-                <div class="proj-img-fallback"><span>INSTINCT</span></div>
-            </div>
-            <div class="project-info">
-                <div class="project-number">03 — Projet academique</div>
-                <h2>INSTINCT</h2>
-                <div class="proj-sub">Site vitrine restaurant</div>
-                <p>Site vitrine complet pour restaurant avec menu interactif a filtres par categorie, systeme de reservation avec formulaire PHP, galerie photos responsive et optimisation SEO. Note 18/20.</p>
-                <div class="project-tags">
-                    <span>HTML/CSS</span><span>JavaScript</span><span>PHP</span><span>SEO</span><span>Responsive</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://instinct-seven.vercel.app/" target="_blank" rel="noopener">
-                        <i class="fas fa-external-link-alt"></i> Voir le projet
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="project-detail-section reveal">
-            <div class="container">
-                <div class="detail-grid">
-                    <div class="detail-block">
-                        <h4>Contexte</h4>
-                        <ul>
-                            <li>Exercice academique avec review formateur</li>
-                            <li>Octobre — Novembre 2024</li>
-                            <li>Projet individuel, 1 mois et demi</li>
-                            <li>Brief client fictif complet</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Hard Skills mobilises</h4>
-                        <ul>
-                            <li>Menu interactif avec filtres JS</li>
-                            <li>Formulaire de reservation PHP</li>
-                            <li>Optimisation SEO on-page</li>
-                            <li>Validation W3C sans erreurs</li>
-                            <li>Design elegant et responsive</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Resultats obtenus</h4>
-                        <ul>
-                            <li>Note : 18/20 au projet academique</li>
-                            <li>Formulaire de reservation operationnel</li>
-                            <li>Code valide W3C</li>
-                            <li>Deploye sur Vercel</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                <div class="project-gallery">
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Instinct Accueil</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Instinct Menu</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Instinct Reservation</span></div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== CONVERTISSEUR ========== -->
-        <div class="project-item reveal" id="convertisseur">
-            <div class="project-img-wrap" data-name="DEVISES">
-                <div class="proj-img-fallback"><span>DEVISES</span></div>
-            </div>
-            <div class="project-info">
-                <div class="project-number">04 — Projet personnel</div>
-                <h2>Convertisseur de Devises</h2>
-                <div class="proj-sub">Application web utilitaire</div>
-                <p>Application de conversion de devises en temps reel integrant une API externe. 160+ devises disponibles, gestion complete des erreurs reseau, mise en cache et interface minimaliste deployee sur Vercel.</p>
-                <div class="project-tags">
-                    <span>HTML/CSS</span><span>JavaScript</span><span>REST API</span><span>Async/Await</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://convertisseur-de-devises.vercel.app/" target="_blank" rel="noopener">
-                        <i class="fas fa-external-link-alt"></i> Voir le projet
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="project-detail-section reveal">
-            <div class="container">
-                <div class="detail-grid">
-                    <div class="detail-block">
-                        <h4>Contexte</h4>
-                        <ul>
-                            <li>Exercice technique personnel</li>
-                            <li>Septembre 2024 — 2 semaines</li>
-                            <li>Maitrise des API externes et JS async</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Hard Skills mobilises</h4>
-                        <ul>
-                            <li>Fetch API et JavaScript asynchrone</li>
-                            <li>Gestion d'erreurs completes</li>
-                            <li>Mise en cache des resultats</li>
-                            <li>Interface mobile-first</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Resultats obtenus</h4>
-                        <ul>
-                            <li>160+ devises disponibles</li>
-                            <li>Conversion en temps reel &lt; 1.5s</li>
-                            <li>Gestion d'erreurs complete</li>
-                            <li>Deploye sur Vercel</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                <div class="project-gallery">
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Convertisseur Interface</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Convertisseur Resultat</span></div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== MYDIGITALAPI ========== -->
-        <div class="project-item reveal" id="mydigitalapi">
-            <div class="project-img-wrap" data-name="MYDIGITALAPI">
-                <!-- IMAGE : remplacez par <img src="../images/mydigitalapi.jpg" alt="MyDigitalAPI"> -->
-                <div class="proj-img-fallback"><span>RICK &amp; MORTY</span></div>
-            </div>
-            <div class="project-info">
-                <div class="project-number">05 — Projet academique B2</div>
-                <h2>MyDigitalAPI</h2>
-                <div class="proj-sub">Rick &amp; Morty Character Explorer</div>
-                <p>Application front-end en TypeScript consommant l'API publique Rick &amp; Morty. Tri, filtrage, pagination et favoris persistants. Design sci-fi retro avec effets visuels. Architecture modulaire 100% vanilla — zero dependance externe.</p>
-                <div class="project-tags">
-                    <span>TypeScript</span><span>HTML/CSS</span><span>REST API</span><span>localStorage</span><span>ES Modules</span>
-                </div>
-                <div class="project-links">
-                    <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="project-detail-section reveal">
-            <div class="container">
-                <div class="detail-grid">
-                    <div class="detail-block">
-                        <h4>Contexte</h4>
-                        <ul>
-                            <li>Module Dev Front-End — Classe B2</li>
-                            <li>Projet academique individuel</li>
-                            <li>Objectif : consommer une API REST publique</li>
-                            <li>Zero framework, Vanilla TypeScript</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Hard Skills mobilises</h4>
-                        <ul>
-                            <li>TypeScript strict — interfaces, types unions</li>
-                            <li>Fetch API et async/await</li>
-                            <li>Gestion d'etats UI loading / error / success</li>
-                            <li>Persistance favoris via localStorage</li>
-                            <li>Architecture ES Modules — 6 fichiers src/</li>
-                            <li>Pagination, tri et filtrage cote client</li>
-                        </ul>
-                    </div>
-                    <div class="detail-block">
-                        <h4>Fonctionnalites</h4>
-                        <ul>
-                            <li>Grille responsive avec animations</li>
-                            <li>Tri par nom ou nombre d'episodes</li>
-                            <li>Modal detail par personnage</li>
-                            <li>Statistiques en temps reel</li>
-                            <li>Vue Tous / Favoris persistants</li>
-                            <li>Design sci-fi retro, effets scanlines</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="section-tag" style="margin-bottom:1rem;">Captures d'ecran</div>
-                <div class="project-gallery">
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Vue principale</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Modal personnage</span></div></div>
-                    <div class="gallery-slot"><div class="gallery-placeholder"><span>Vue Favoris</span></div></div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<footer>
-    <div class="footer-inner container">
-        <div class="footer-brand">Herman Kouogang — 2025</div>
-        <div class="footer-socials">
-            <a href="https://github.com/Herman-bipbop" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/herman-kouogang-kouam/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="https://www.instagram.com/kasho.llds" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        </div>
-    </div>
-</footer>
-
-<script src="../js/loader.js"></script>
-<script src="../js/nav.js"></script>
-<script src="../js/animations.js"></script>
-<script src="../js/projects.js"></script>
-```
-
+    <script src="../js/loader.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/animations.js"></script>
+    <script src="../js/projects.js"></script>
 </body>
 </html>

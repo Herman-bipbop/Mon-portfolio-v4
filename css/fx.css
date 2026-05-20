@@ -1,0 +1,423 @@
+/* ============================================================
+   FX.CSS — Animations avancées
+   Cursor / Magnetic / Parallaxe / Page transitions /
+   Glassmorphism / Reveal directionnel / Grain / Glow
+   ============================================================ */
+
+/* ── CURSOR PERSONNALISÉ ─────────────────────────────────── */
+* { cursor: none !important; }
+
+.fx-cursor-dot {
+    position: fixed;
+    top: -4px; left: -4px;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transition: opacity 0.2s;
+    will-change: transform;
+}
+
+.fx-cursor-ring {
+    position: fixed;
+    top: -18px; left: -18px;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transition: opacity 0.2s, width 0.3s ease, height 0.3s ease,
+                border-color 0.3s ease, background 0.3s ease;
+    will-change: transform;
+    opacity: 0.6;
+}
+
+.fx-cursor-ring--hover {
+    width: 56px; height: 56px;
+    top: -28px; left: -28px;
+    border-color: var(--green);
+    background: var(--green-muted);
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    * { cursor: auto !important; }
+    .fx-cursor-dot, .fx-cursor-ring { display: none; }
+}
+
+/* ── MAGNETIC BUTTONS ────────────────────────────────────── */
+.fx-magnetic {
+    transition: transform 0.1s ease;
+    will-change: transform;
+}
+
+/* ── PAGE TRANSITION OVERLAY ─────────────────────────────── */
+.fx-page-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9990;
+    pointer-events: none;
+    background: var(--dark);
+    transform: translateY(0);
+    transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.fx-page-overlay--out {
+    transform: translateY(-100%);
+}
+
+.fx-page-overlay--in {
+    transform: translateY(0) !important;
+    pointer-events: all;
+}
+
+.fx-page-overlay-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s ease 0.05s;
+}
+
+.fx-page-overlay--in .fx-page-overlay-bar {
+    transform: scaleX(1);
+}
+
+/* ── REVEAL DIRECTIONNEL ─────────────────────────────────── */
+.fx-dir-reveal {
+    opacity: 0;
+    transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.2, 0, 0, 1);
+    will-change: transform, opacity;
+}
+
+.fx-from-left  { transform: translateX(-40px); }
+.fx-from-right { transform: translateX(40px); }
+
+.fx-dir-reveal.fx-revealed {
+    opacity: 1;
+    transform: translateX(0) !important;
+}
+
+/* Délais décalés pour les grilles */
+.fx-dir-reveal:nth-child(2) { transition-delay: 0.08s; }
+.fx-dir-reveal:nth-child(3) { transition-delay: 0.16s; }
+.fx-dir-reveal:nth-child(4) { transition-delay: 0.24s; }
+
+/* ── GLASSMORPHISM NAV ───────────────────────────────────── */
+#nav.fx-glass {
+    background: rgba(var(--bg-raised-rgb, 248, 248, 246), 0.75) !important;
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border-bottom-color: var(--bd) !important;
+}
+
+[data-theme="dark"] #nav.fx-glass {
+    background: rgba(32, 32, 32, 0.75) !important;
+}
+
+/* ── HOVER OVERLAY PROJECT CARDS ─────────────────────────── */
+.fx-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(12, 184, 74, 0.25) 0%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.fx-img-hovered .fx-card-overlay {
+    opacity: 1;
+}
+
+.fx-img-hovered img {
+    transform: scale(1.05) !important;
+    filter: brightness(0.9) !important;
+}
+
+/* ── GRAIN TEXTURE ───────────────────────────────────────── */
+.fx-grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%; height: 200%;
+    pointer-events: none;
+    z-index: 9980;
+    opacity: 0;
+    animation: fxGrainAnim 0.15s steps(1) infinite;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
+}
+
+[data-theme="light"] .fx-grain { opacity: 0.018; }
+[data-theme="dark"]  .fx-grain { opacity: 0.03; }
+
+@keyframes fxGrainAnim {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(-2%, -3%); }
+    20%  { transform: translate(3%, 2%); }
+    30%  { transform: translate(-1%, 4%); }
+    40%  { transform: translate(4%, -1%); }
+    50%  { transform: translate(-3%, 3%); }
+    60%  { transform: translate(2%, -4%); }
+    70%  { transform: translate(-4%, 1%); }
+    80%  { transform: translate(1%, -2%); }
+    90%  { transform: translate(-2%, 4%); }
+    100% { transform: translate(3%, -3%); }
+}
+
+/* ── SECTION TAG ANIMATION ───────────────────────────────── */
+.section-tag,
+.page-hero-tag,
+.about-side-tag {
+    position: relative;
+    display: inline-block;
+}
+
+.section-tag::after,
+.about-side-tag::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0;
+    width: 0; height: 1.5px;
+    background: var(--green-dim);
+    transition: width 0.6s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.fx-tag-animate::after { width: 100%; }
+
+/* ── LUEUR VERTE DARK MODE ───────────────────────────────── */
+.fx-dark-glow .nav-links a.active {
+    text-shadow: 0 0 12px rgba(12, 184, 74, 0.5);
+}
+
+.fx-dark-glow .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(12, 184, 74, 0.35), 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.fx-dark-glow .green-dim,
+.fx-dark-glow .section-tag,
+.fx-dark-glow .page-hero-tag {
+    text-shadow: 0 0 10px rgba(12, 184, 74, 0.3);
+}
+
+.fx-dark-glow .hero-tag {
+    box-shadow: 0 0 18px rgba(12, 184, 74, 0.15), inset 0 0 12px rgba(12, 184, 74, 0.05);
+}
+
+.fx-dark-glow .tech-card:hover {
+    box-shadow: var(--sh-md), 0 0 20px rgba(12, 184, 74, 0.12);
+}
+
+.fx-dark-glow .tl-content:hover {
+    box-shadow: var(--sh-md), 0 0 16px rgba(12, 184, 74, 0.1);
+}
+
+/* ── AMÉLIORATIONS LIGHT MODE ────────────────────────────── */
+[data-theme="light"] .stat-item {
+    background: var(--bg-raised);
+    box-shadow: var(--sh-sm);
+}
+
+[data-theme="light"] .featured-card {
+    box-shadow: var(--sh-sm);
+}
+
+[data-theme="light"] .featured-card:hover {
+    box-shadow: var(--sh-lg);
+}
+
+[data-theme="light"] .tech-card {
+    box-shadow: var(--sh-sm);
+}
+
+[data-theme="light"] .tl-content {
+    box-shadow: var(--sh-sm);
+}
+
+[data-theme="light"] .soft-card {
+    box-shadow: var(--sh-sm);
+}
+
+[data-theme="light"] .contact-form-wrap {
+    box-shadow: var(--sh-lg);
+}
+
+/* Fond légèrement texturé en light mode via gradient subtil */
+[data-theme="light"] body {
+    background-image: radial-gradient(
+        ellipse at 20% 50%,
+        rgba(12, 184, 74, 0.025) 0%,
+        transparent 60%
+    ),
+    radial-gradient(
+        ellipse at 80% 20%,
+        rgba(12, 184, 74, 0.02) 0%,
+        transparent 50%
+    );
+}
+
+/* ── AMÉLIORATIONS DARK MODE ─────────────────────────────── */
+[data-theme="dark"] .hero::before {
+    content: '';
+    position: absolute;
+    left: 5vw; top: 30%;
+    width: 40vw; height: 50vh;
+    background: radial-gradient(ellipse, rgba(12, 184, 74, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: fxGlowPulse 6s ease-in-out infinite;
+}
+
+@keyframes fxGlowPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.08); }
+}
+
+[data-theme="dark"] .bg-raised,
+[data-theme="dark"] .tech-card,
+[data-theme="dark"] .soft-card {
+    box-shadow: var(--sh-sm), 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* ── HERO RADIAL BACKDROP ────────────────────────────────── */
+.hero::after {
+    content: '';
+    position: absolute;
+    right: 0; bottom: 0;
+    width: 60%; height: 70%;
+    background: radial-gradient(
+        ellipse at bottom right,
+        rgba(12, 184, 74, 0.04) 0%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── TRANSITIONS GLOBALES FLUIDES ────────────────────────── */
+.featured-card,
+.tech-card,
+.soft-card,
+.value-card,
+.stat-item,
+.project-item,
+.tl-content,
+.contact-item {
+    transition:
+        transform 0.35s cubic-bezier(0.2, 0, 0, 1),
+        box-shadow 0.35s ease,
+        background 0.3s ease,
+        border-color 0.3s ease !important;
+}
+
+/* ── SCROLL INDICATOR ANIMÉ ──────────────────────────────── */
+.hero-scroll .scroll-line {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-scroll .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--green);
+    animation: scrollDrop 2s ease-in-out infinite;
+}
+
+@keyframes scrollDrop {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    30%  { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { transform: translateY(100%);  opacity: 0; }
+}
+
+/* ── NAV BRAND HOVER ─────────────────────────────────────── */
+.nav-brand {
+    transition: letter-spacing 0.3s ease;
+}
+.nav-brand:hover {
+    letter-spacing: 0.02em;
+}
+
+/* ── PROJET IMAGE SCALE TRANSITION ──────────────────────────*/
+.project-img-wrap {
+    overflow: hidden;
+}
+
+.project-img-wrap img {
+    transition: transform 0.65s cubic-bezier(0.2, 0, 0, 1),
+                filter 0.65s ease !important;
+}
+
+/* ── FEATURED CARD BADGE POP ─────────────────────────────── */
+.featured-badge {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+.featured-card:hover .featured-badge {
+    transform: scale(1.05);
+}
+
+/* ── SKILL BARS ANIMATION ────────────────────────────────── */
+.level-fill {
+    transition: width 1.2s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+/* ── LOADER AMÉLIORÉ ─────────────────────────────────────── */
+.loader-logo {
+    animation: fxLogoPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fxLogoPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.8; transform: scale(0.97); }
+}
+
+/* ── FOOTER SOCIALS ──────────────────────────────────────── */
+.footer-socials a {
+    transition: color 0.25s ease, transform 0.25s ease !important;
+}
+.footer-socials a:hover {
+    transform: translateY(-3px);
+}
+
+/* ── BACK TO TOP BUTTON ──────────────────────────────────── */
+.fx-back-top {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    width: 42px; height: 42px;
+    background: var(--text-1);
+    color: var(--bg);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+    z-index: 800;
+}
+
+.fx-back-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fx-back-top:hover {
+    background: var(--green-dim);
+    color: #000;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .fx-grain { opacity: 0.015; }
+    [data-theme="dark"] .hero::before { display: none; }
+}
